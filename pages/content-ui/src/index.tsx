@@ -2,7 +2,7 @@ import { createRoot } from 'react-dom/client';
 import App from '@src/App';
 // @ts-expect-error Because file doesn't exist before build
 import tailwindcssOutput from '../dist/tailwind-output.css?inline';
-import MockUI from './MockUI';
+import MockUI from './components/MockUI';
 import { IS_DEV } from '@extension/env';
 
 if (IS_DEV) {
@@ -19,12 +19,12 @@ if (IS_DEV) {
 }
 
 const root = document.createElement('div');
-root.id = 'chrome-extension-boilerplate-react-vite-content-view-root';
+root.id = 'element-scan-root';
 
 document.body.append(root);
 
 const rootIntoShadow = document.createElement('div');
-rootIntoShadow.id = 'shadow-root';
+rootIntoShadow.id = 'element-scan-shadow-root';
 
 const shadowRoot = root.attachShadow({ mode: 'open' });
 
