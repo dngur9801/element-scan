@@ -1,43 +1,62 @@
-import { useState } from 'react';
+import { useElementScanStore } from '@extension/shared';
+import { cn } from '@extension/ui';
+import { useEffect, useRef } from 'react';
+import { useShallow } from 'zustand/shallow';
 
-interface ElementInfoOverlayProps {
-  elementInfo?: {
-    tagName: string;
-    className: string;
-    width: number;
-    height: number;
-    styles: {
-      [key: string]: string;
-    };
-  };
-  onCopy?: () => void;
-  onPin?: () => void;
-  isPinned?: boolean;
-}
+const OVERLAY_HEIGHT = 400;
+const OVERLAY_WIDTH = 300;
 
-export default function ElementInfoOverlay({
-  elementInfo = {
-    tagName: 'div',
-    className: 'py-12',
-    width: 862,
-    height: 224,
-    styles: {
-      'padding-top': '64px',
-      'padding-bottom': '64px',
-      border: '0px solid rgb(229, 231, 235)',
-    },
-  },
-  onCopy,
-  onPin,
-  isPinned = false,
-}: ElementInfoOverlayProps) {
-  const [activeTab, setActiveTab] = useState<'layout' | 'typography' | 'colors'>('layout');
+export default function ElementInfoOverlay() {
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const { hoveredElement, elementInfo, isPinned, togglePin } = useElementScanStore(
+    useShallow(state => ({
+      hoveredElement: state.hoveredElement,
+      elementInfo: state.elementInfo,
+      isPinned: state.isPinned,
+      togglePin: state.togglePin,
+    })),
+  );
+
+  useEffect(() => {
+    if (!overlayRef.current) return;
+
+    if (hoveredElement) {
+      const overlay = overlayRef.current;
+      const rect = hoveredElement.getBoundingClientRect();
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+
+      // 좌측 하단 기본 위치 설정
+      let left = rect.left;
+      let top = rect.bottom + 10;
+
+      // 화면 아래쪽에 공간이 부족한 경우 요소 위에 표시
+      if (top + OVERLAY_HEIGHT > viewportHeight) {
+        top = Math.max(0, rect.top - (OVERLAY_HEIGHT + 10));
+      }
+
+      // 왼쪽에 공간이 부족한 경우 오른쪽으로 조정
+      if (left + OVERLAY_WIDTH > viewportWidth) {
+        left = Math.max(0, viewportWidth - OVERLAY_WIDTH - 10);
+      }
+
+      overlay.style.display = 'flex';
+      overlay.style.left = `${left}px`;
+      overlay.style.top = `${top}px`;
+    } else {
+      overlayRef.current.style.display = 'none';
+    }
+  }, [hoveredElement]);
 
   return (
     <div
-      className="fixed shadow-lg rounded-lg overflow-hidden flex flex-col w-[300px]"
-      style={{ backgroundColor: '#22232D', color: '#fff' }}>
-      {/* 헤더 영역 */}
+      ref={overlayRef}
+      style={{ width: `${OVERLAY_WIDTH}px`, height: `${OVERLAY_HEIGHT}px` }}
+      className={cn(
+        `fixed z-[99999] bg-[#292D3E] text-white rounded-md shadow-lg text-sm font-mono leading-normal transition-opacity duration-300 ease-in-out box-border flex flex-col`,
+        hoveredElement ? 'opacity-100' : 'opacity-0',
+      )}
+      id="element-scan-info-overlay">
       <div className="p-3 pb-2">
         <div className="font-mono text-sm text-gray-300">
           {elementInfo.tagName}.{elementInfo.className}
@@ -46,18 +65,8 @@ export default function ElementInfoOverlay({
           {elementInfo.width} × {elementInfo.height}
         </div>
       </div>
-
-      {/* 탭 영역 */}
-      <div className="text-sm border-b border-gray-700">
-        <button
-          className={`px-4 py-2 ${activeTab === 'layout' ? 'text-blue-400 border-b-2 border-blue-400' : 'text-gray-400'}`}
-          onClick={() => setActiveTab('layout')}>
-          Layout
-        </button>
-      </div>
-
       {/* 콘텐츠 영역 */}
-      <div className="flex-1 overflow-y-auto font-mono" style={{ maxHeight: '300px' }}>
+      <div className="flex-1 overflow-y-auto font-mono">
         <div className="p-3">
           {Object.entries(elementInfo.styles).map(([property, value]) => (
             <div key={property} className="flex justify-between items-center mb-1">
@@ -67,18 +76,24 @@ export default function ElementInfoOverlay({
           ))}
         </div>
       </div>
-
       {/* 푸터 영역 */}
       <div className="grid grid-cols-2 gap-2 p-2 border-t border-gray-700">
         <button
           className="bg-gray-600 hover:bg-gray-500 text-white text-xs py-2 px-4 rounded transition"
-          onClick={onCopy}>
+          onClick={() => {
+            //카피
+          }}>
           Copy CSS
         </button>
         <button
-          className={`${isPinned ? 'bg-blue-600 hover:bg-blue-500' : 'bg-gray-600 hover:bg-gray-500'} text-white text-xs py-2 px-4 rounded transition`}
-          onClick={onPin}>
-          요소 클릭 시 고정
+          className={cn(
+            'text-white text-xs py-2 px-4 rounded transition',
+            isPinned ? 'bg-blue-600 hover:bg-blue-500' : 'bg-gray-600 hover:bg-gray-500',
+          )}
+          onClick={() => {
+            togglePin();
+          }}>
+          {isPinned ? '고정 해제' : '요소 클릭 시 고정'}
         </button>
       </div>
     </div>

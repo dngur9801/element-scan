@@ -4,6 +4,15 @@ interface useElementScanStore {
   elementScanActive: boolean;
   isPinned: boolean;
   hoveredElement: HTMLElement | null;
+  elementInfo: {
+    tagName: string;
+    className: string;
+    width: number;
+    height: number;
+    styles: {
+      [key: string]: string;
+    };
+  };
 
   reset: () => void;
   toggleScan: (value?: boolean) => boolean;
@@ -15,6 +24,20 @@ export const useElementScanStore = create<useElementScanStore>((set, get) => ({
   elementScanActive: false,
   isPinned: false,
   hoveredElement: null,
+  elementInfo: {
+    tagName: 'div',
+    className: 'element-scan-store',
+    width: 100,
+    height: 100,
+    styles: {
+      width: '100px',
+      height: '100px',
+      backgroundColor: 'red',
+      border: '1px solid black',
+      padding: '10px',
+      margin: '10px',
+    },
+  },
 
   reset: () =>
     set({

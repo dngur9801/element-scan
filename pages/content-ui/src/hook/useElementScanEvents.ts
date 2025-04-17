@@ -18,7 +18,6 @@ export const useElementScanEvents = () => {
 
       if (target === hoveredElement || isPinned) return;
 
-      console.log('target', target);
       setHoveredElement(target);
     };
 
