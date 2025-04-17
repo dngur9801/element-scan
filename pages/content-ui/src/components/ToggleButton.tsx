@@ -1,5 +1,5 @@
 import { cn } from '@extension/ui';
-import { useElementScanStore } from '@extension/shared';
+import { useElementScanStore, ELEMENT_ID } from '@extension/shared';
 
 export default function ToggleButton() {
   const { elementScanActive, toggleScan } = useElementScanStore();
@@ -7,7 +7,7 @@ export default function ToggleButton() {
   return (
     <div className="fixed top-2 right-2 z-[9999]">
       <button
-        id="element-scan-toggle-btn"
+        id={ELEMENT_ID.TOGGLE_BTN}
         onClick={e => {
           e.preventDefault();
           e.stopPropagation();

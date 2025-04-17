@@ -1,4 +1,4 @@
-import { useElementScanStore } from '@extension/shared';
+import { useElementScanStore, ELEMENT_ID } from '@extension/shared';
 import { cn } from '@extension/ui';
 import { useEffect, useRef } from 'react';
 import { useShallow } from 'zustand/shallow';
@@ -58,7 +58,7 @@ export default function ElementInfoOverlay() {
         `fixed z-[99999] bg-[#292D3E] text-white rounded-md shadow-lg text-sm font-mono leading-normal transition-opacity duration-300 ease-in-out box-border flex flex-col`,
         hoveredElement ? 'opacity-100' : 'opacity-0',
       )}
-      id="element-scan-info-overlay">
+      id={ELEMENT_ID.ELEMENT_INFO_OVERLAY}>
       {elementInfo ? (
         <>
           {/* 헤더 영역 */}

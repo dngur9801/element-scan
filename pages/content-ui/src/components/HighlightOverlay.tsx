@@ -1,4 +1,4 @@
-import { useElementScanStore } from '@extension/shared';
+import { useElementScanStore, ELEMENT_ID } from '@extension/shared';
 import { useRef, useEffect } from 'react';
 
 export default function HighlightOverlay() {
@@ -27,7 +27,7 @@ export default function HighlightOverlay() {
     <div
       ref={overlayRef}
       className="absolute pointer-events-none z-[99999] border-2 border-[#50fa7b] bg-[rgba(80,250,123,0.15)] box-border hidden"
-      id="element-scan-highlight-overlay"
+      id={ELEMENT_ID.HIGHLIGHT_OVERLAY}
     />
   );
 }

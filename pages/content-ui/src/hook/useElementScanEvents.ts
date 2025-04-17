@@ -1,10 +1,7 @@
 // hooks/useElementScanEvents.ts
 import { useEffect } from 'react';
-import { useElementScanStore } from '@extension/shared';
-import { ROOT_ID } from '..';
+import { ELEMENT_ID, useElementScanStore } from '@extension/shared';
 import { extractElementInfo } from '@src/utils';
-
-const TOGGLE_BTN_ID = 'element-scan-toggle-btn';
 
 export const useElementScanEvents = () => {
   const { elementScanActive, isPinned, hoveredElement, setHoveredElement, toggleScan, togglePin, setElementInfo } =
@@ -36,10 +33,12 @@ export const useElementScanEvents = () => {
       const target = e.target as HTMLElement;
 
       // 대상 요소 클릭시 이벤트 중단
-      if (target.id !== TOGGLE_BTN_ID && target.id !== ROOT_ID) {
+      if (target.id !== ELEMENT_ID.TOGGLE_BTN && target.id !== ELEMENT_ID.ROOT) {
         e.preventDefault();
         e.stopPropagation();
       }
+
+      // if(target.id === )
 
       if (!hoveredElement) {
         setHoveredElement(target);

@@ -2,16 +2,15 @@ import { createRoot } from 'react-dom/client';
 import App from '@src/App';
 // @ts-expect-error Because file doesn't exist before build
 import tailwindcssOutput from '../dist/tailwind-output.css?inline';
-
-export const ROOT_ID = 'element-scan-root';
+import { ELEMENT_ID } from '@extension/shared';
 
 const root = document.createElement('div');
-root.id = ROOT_ID;
+root.id = ELEMENT_ID.ROOT;
 
 document.body.append(root);
 
 const rootIntoShadow = document.createElement('div');
-rootIntoShadow.id = 'element-scan-shadow-root';
+rootIntoShadow.id = ELEMENT_ID.SHADOW_ROOT;
 
 const shadowRoot = root.attachShadow({ mode: 'open' });
 
