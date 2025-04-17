@@ -1,11 +1,11 @@
 {
   "extensionDescription": {
     "description": "Extension description",
-    "message": "React, Typescript, Vite를 사용한 크롬 익스텐션 보일러플레이트입니다."
+    "message": "자체 인스펙터로 웹 요소의 element 정보를 overlay로 표시해주는 도구"
   },
   "extensionName": {
     "description": "Extension name",
-    "message": "크롬 익스텐션 보일러플레이트"
+    "message": "Element Scan"
   },
   "toggleTheme": {
     "message": "테마 변경"
