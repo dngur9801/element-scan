@@ -5,6 +5,8 @@ import tailwindcssOutput from '../dist/tailwind-output.css?inline';
 import MockUI from './components/MockUI';
 import { IS_DEV } from '@extension/env';
 
+export const ROOT_ID = 'element-scan-root';
+
 if (IS_DEV) {
   const testUiRoot = document.createElement('div');
   testUiRoot.id = 'test-ui-root';
@@ -19,7 +21,7 @@ if (IS_DEV) {
 }
 
 const root = document.createElement('div');
-root.id = 'element-scan-root';
+root.id = ROOT_ID;
 
 document.body.append(root);
 

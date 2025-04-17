@@ -7,7 +7,7 @@ export default function HighlightOverlay() {
   const hoveredElement = useElementScanStore(state => state.hoveredElement);
 
   useEffect(() => {
-    if (!overlayRef.current || !hoveredElement) return;
+    if (!overlayRef.current) return;
 
     if (hoveredElement) {
       const rect = hoveredElement.getBoundingClientRect();

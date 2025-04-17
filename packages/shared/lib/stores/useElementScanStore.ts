@@ -40,9 +40,9 @@ export const useElementScanStore = create<useElementScanStore>((set, get) => ({
 
   togglePin: (value?: boolean) => {
     const current = get().isPinned;
-    const next = value !== undefined ? value : !current;
-    set({ isPinned: next });
-    return next;
+    const isPinned = value !== undefined ? value : !current;
+    set({ isPinned });
+    return isPinned;
   },
 
   setHoveredElement: (element: HTMLElement | null) => set({ hoveredElement: element }),

@@ -1,7 +1,9 @@
 // hooks/useElementScanEvents.ts
 import { useEffect } from 'react';
 import { useElementScanStore } from '@extension/shared';
-import { isScanElement } from '@src/utils';
+import { ROOT_ID } from '..';
+
+const TOGGLE_BTN_ID = 'element-scan-toggle-btn';
 
 export const useElementScanEvents = () => {
   const { elementScanActive, isPinned, hoveredElement, setHoveredElement, toggleScan, togglePin } =
@@ -14,14 +16,8 @@ export const useElementScanEvents = () => {
       const target = e.target as HTMLElement;
       if (!target || !(target instanceof HTMLElement)) return;
 
-      if (isScanElement(target) || target === hoveredElement || isPinned) return;
+      if (target === hoveredElement || isPinned) return;
 
-      //   if (hoveredElement && hoveredElement !== target) {
-      //     removeHighlight(hoveredElement);
-      //   }
-
-      //   applyHighlight(target);
-      //   setupOverlay(target);
       console.log('target', target);
       setHoveredElement(target);
     };
@@ -31,30 +27,22 @@ export const useElementScanEvents = () => {
       if (isPinned || target !== hoveredElement) return;
 
       setHoveredElement(null);
-      //   removeHighlight(target);
-      //   if (currentOverlay) {
-      //     currentOverlay.style.display = 'none';
-      //   }
     };
 
     const handleClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      if (isScanElement(target)) return;
 
-      e.preventDefault();
-      e.stopPropagation();
+      // 대상 요소 클릭시 이벤트 중단
+      if (target.id !== TOGGLE_BTN_ID && target.id !== ROOT_ID) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
 
       if (!hoveredElement) {
         setHoveredElement(target);
-        // applyHighlight(target);
-        // setupOverlay(target);
       }
 
       togglePin();
-
-      //   if (hoveredElement && currentOverlay) {
-      //     updateOverlayWithStyles(hoveredElement);
-      //   }
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {
