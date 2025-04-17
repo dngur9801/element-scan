@@ -5,7 +5,6 @@ export default function HighlightOverlay() {
   const overlayRef = useRef<HTMLDivElement>(null);
 
   const hoveredElement = useElementScanStore(state => state.hoveredElement);
-  console.log('hoveredElement', hoveredElement);
 
   useEffect(() => {
     if (!overlayRef.current || !hoveredElement) return;
@@ -13,8 +12,6 @@ export default function HighlightOverlay() {
     if (hoveredElement) {
       const rect = hoveredElement.getBoundingClientRect();
       const overlay = overlayRef.current;
-
-      console.log('rect', rect);
 
       overlay.style.top = `${rect.top + window.scrollY}px`;
       overlay.style.left = `${rect.left + window.scrollX}px`;
