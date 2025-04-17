@@ -36,6 +36,9 @@ function getUserDefinedStyles(element: HTMLElement): Record<string, string> {
 
 // 스타일 속성을 그룹으로 분류하는 함수
 function categorizeStyles(styles: Record<string, string>): StyleGroup[] {
+  // 제외할 스타일 패턴
+  const excludePatterns = ['--tw-'];
+
   // 그룹별 속성 분류 정의
   const layoutProperties = [
     'width',
@@ -116,6 +119,11 @@ function categorizeStyles(styles: Record<string, string>): StyleGroup[] {
 
   // 각 스타일 속성을 적절한 그룹에 분류
   Object.entries(styles).forEach(([property, value]) => {
+    if (value === '') return;
+
+    // 제외 패턴에 해당하는 속성 제외
+    if (excludePatterns.some(pattern => property.startsWith(pattern))) return;
+
     if (layoutProperties.includes(property)) {
       result[0].styles[property] = value;
     } else if (typographyProperties.includes(property)) {

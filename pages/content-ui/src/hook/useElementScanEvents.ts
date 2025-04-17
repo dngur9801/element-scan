@@ -21,7 +21,6 @@ export const useElementScanEvents = () => {
 
       const elementInfo = extractElementInfo(target);
 
-      console.log('elementInfo', elementInfo);
       setElementInfo(elementInfo);
       setHoveredElement(target);
     };
