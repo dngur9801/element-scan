@@ -146,7 +146,7 @@ export function extractElementInfo(element: HTMLElement): ElementInfo | null {
 
   const elementInfo: ElementInfo = {
     tagName: element.tagName.toLowerCase(),
-    className: element.className,
+    className: element.className.split(' ')[0],
     width: element.offsetWidth,
     height: element.offsetHeight,
     styleGroups: categorizeStyles(userDefinedStyles),
