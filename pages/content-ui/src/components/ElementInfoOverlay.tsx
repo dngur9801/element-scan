@@ -1,6 +1,6 @@
 import { useElementScanStore, ELEMENT_ID } from '@extension/shared';
 import { cn } from '@extension/ui';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useShallow } from 'zustand/shallow';
 import { styleGroupsToCSSText } from '@src/utils';
 
@@ -9,6 +9,7 @@ const OVERLAY_WIDTH = 300;
 
 export default function ElementInfoOverlay() {
   const overlayRef = useRef<HTMLDivElement>(null);
+  const [isCopying, setIsCopying] = useState(false);
 
   const { hoveredElement, elementInfo, isPinned, togglePin } = useElementScanStore(
     useShallow(state => ({
@@ -18,6 +19,19 @@ export default function ElementInfoOverlay() {
       togglePin: state.togglePin,
     })),
   );
+
+  const handleCopyCSS = () => {
+    if (!elementInfo) return;
+    if (isCopying) return;
+
+    setIsCopying(true);
+    setTimeout(() => {
+      setIsCopying(false);
+    }, 1500);
+
+    const css = styleGroupsToCSSText(elementInfo.styleGroups);
+    navigator.clipboard.writeText(css);
+  };
 
   useEffect(() => {
     if (!overlayRef.current) return;
@@ -111,12 +125,12 @@ export default function ElementInfoOverlay() {
           {/* 푸터 영역 */}
           <div className="grid grid-cols-2 gap-2 p-2 border-t border-gray-700">
             <button
-              className="bg-gray-600 hover:bg-gray-500 text-white text-xs py-2 px-4 rounded transition"
-              onClick={() => {
-                const css = styleGroupsToCSSText(elementInfo.styleGroups);
-                navigator.clipboard.writeText(css);
-              }}>
-              Copy CSS
+              className={cn(
+                'bg-gray-600 hover:bg-gray-500 text-white text-xs py-2 px-4 rounded transition',
+                isCopying ? 'bg-[#00FF00] text-black disabled:opacity-50 hover:bg-[#00ff00] cursor-not-allowed' : '',
+              )}
+              onClick={handleCopyCSS}>
+              {isCopying ? 'Copy!' : 'Copy CSS'}
             </button>
             <button
               className={cn(
