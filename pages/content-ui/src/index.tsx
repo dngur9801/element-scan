@@ -2,23 +2,8 @@ import { createRoot } from 'react-dom/client';
 import App from '@src/App';
 // @ts-expect-error Because file doesn't exist before build
 import tailwindcssOutput from '../dist/tailwind-output.css?inline';
-import MockUI from './components/MockUI';
-import { IS_DEV } from '@extension/env';
 
 export const ROOT_ID = 'element-scan-root';
-
-if (IS_DEV) {
-  const testUiRoot = document.createElement('div');
-  testUiRoot.id = 'test-ui-root';
-  document.body.append(testUiRoot);
-
-  const styleElement = document.createElement('style');
-  styleElement.setAttribute('type', 'text/css');
-  styleElement.textContent = tailwindcssOutput;
-  document.head.appendChild(styleElement);
-
-  createRoot(testUiRoot).render(<MockUI />);
-}
 
 const root = document.createElement('div');
 root.id = ROOT_ID;
