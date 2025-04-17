@@ -1,23 +1,17 @@
 import { create } from 'zustand';
+import { type ElementInfo } from '../types/index.js';
 
 interface useElementScanStore {
   elementScanActive: boolean;
   isPinned: boolean;
   hoveredElement: HTMLElement | null;
-  elementInfo: {
-    tagName: string;
-    className: string;
-    width: number;
-    height: number;
-    styles: {
-      [key: string]: string;
-    };
-  };
+  elementInfo: ElementInfo | null;
 
   reset: () => void;
   toggleScan: (value?: boolean) => boolean;
   togglePin: (value?: boolean) => boolean;
   setHoveredElement: (element: HTMLElement | null) => void;
+  setElementInfo: (elementInfo: ElementInfo | null) => void;
 }
 
 export const useElementScanStore = create<useElementScanStore>((set, get) => ({
@@ -25,18 +19,11 @@ export const useElementScanStore = create<useElementScanStore>((set, get) => ({
   isPinned: false,
   hoveredElement: null,
   elementInfo: {
-    tagName: 'div',
-    className: 'element-scan-store',
-    width: 100,
-    height: 100,
-    styles: {
-      width: '100px',
-      height: '100px',
-      backgroundColor: 'red',
-      border: '1px solid black',
-      padding: '10px',
-      margin: '10px',
-    },
+    tagName: '',
+    className: '',
+    width: 0,
+    height: 0,
+    styleGroups: [],
   },
 
   reset: () =>
@@ -69,4 +56,6 @@ export const useElementScanStore = create<useElementScanStore>((set, get) => ({
   },
 
   setHoveredElement: (element: HTMLElement | null) => set({ hoveredElement: element }),
+
+  setElementInfo: (elementInfo: ElementInfo | null) => set({ elementInfo }),
 }));

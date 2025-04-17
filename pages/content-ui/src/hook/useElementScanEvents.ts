@@ -2,11 +2,12 @@
 import { useEffect } from 'react';
 import { useElementScanStore } from '@extension/shared';
 import { ROOT_ID } from '..';
+import { extractElementInfo } from '@src/utils';
 
 const TOGGLE_BTN_ID = 'element-scan-toggle-btn';
 
 export const useElementScanEvents = () => {
-  const { elementScanActive, isPinned, hoveredElement, setHoveredElement, toggleScan, togglePin } =
+  const { elementScanActive, isPinned, hoveredElement, setHoveredElement, toggleScan, togglePin, setElementInfo } =
     useElementScanStore();
 
   useEffect(() => {
@@ -18,6 +19,10 @@ export const useElementScanEvents = () => {
 
       if (target === hoveredElement || isPinned) return;
 
+      const elementInfo = extractElementInfo(target);
+
+      console.log('elementInfo', elementInfo);
+      setElementInfo(elementInfo);
       setHoveredElement(target);
     };
 
