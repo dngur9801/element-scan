@@ -32,13 +32,15 @@ export const useElementScanEvents = () => {
     const handleClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
 
-      // 대상 요소 클릭시 이벤트 중단
       if (target.id !== ELEMENT_ID.TOGGLE_BTN && target.id !== ELEMENT_ID.ROOT) {
+        // 대상 요소 클릭시 이벤트 중단
         e.preventDefault();
         e.stopPropagation();
       }
 
-      // if(target.id === )
+      if (target.id === ELEMENT_ID.ROOT) {
+        return;
+      }
 
       if (!hoveredElement) {
         setHoveredElement(target);
