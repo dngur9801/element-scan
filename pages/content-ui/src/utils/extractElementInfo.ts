@@ -2,7 +2,6 @@ import type { ElementInfo, StyleGroup } from '../../../../packages/shared/lib/ty
 
 function getUserDefinedStyles(element: HTMLElement): Record<string, string> {
   const definedStyles: Record<string, string> = {};
-  console.log('document.styleSheets', document.styleSheets);
 
   // 모든 스타일시트 순회
   for (const sheet of Array.from(document.styleSheets)) {
@@ -31,8 +30,6 @@ function getUserDefinedStyles(element: HTMLElement): Record<string, string> {
     const propertyName: string = inlineStyle[i];
     definedStyles[propertyName] = inlineStyle.getPropertyValue(propertyName);
   }
-
-  console.log('definedStyles', definedStyles);
 
   return definedStyles;
 }
