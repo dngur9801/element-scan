@@ -15,6 +15,7 @@ const excludeValues: string[] = [
   'inherit',
   'static',
   'normal',
+  'rgba(0, 0, 0, 0)',
 ];
 
 function getUserDefinedStyles(element: HTMLElement): Record<string, string> {
@@ -59,8 +60,6 @@ function categorizeStyles(styles: Record<string, string>): StyleGroup[] {
     {
       name: 'Layout',
       properties: [
-        'width',
-        'height',
         'display',
         'justify-content',
         'align-items',
@@ -84,7 +83,7 @@ function categorizeStyles(styles: Record<string, string>): StyleGroup[] {
     },
     {
       name: 'Typography',
-      properties: ['font-family', 'font-size', 'font-weight', 'line-height', 'letter-spacing'],
+      properties: ['font-family', 'font-size', 'font-weight', 'line-height', 'letter-spacing', 'color'],
     },
     {
       name: 'Appearance',

@@ -3,6 +3,7 @@ import { cn } from '@extension/ui';
 import { useEffect, useRef, useState } from 'react';
 import { useShallow } from 'zustand/shallow';
 import { styleGroupsToCSSText } from '@src/utils';
+import { colorManager } from '@src/utils/colorManager';
 
 const OVERLAY_HEIGHT = 400;
 const OVERLAY_WIDTH = 300;
@@ -109,12 +110,26 @@ export default function ElementInfoOverlay() {
                   <div className="p-2">
                     {Object.entries(group.styles).map(([property, value]) => (
                       <div key={property} className="flex justify-between items-center mb-1 px-1">
-                        <span className="text-xs text-blue-300 truncate max-w-[45%]" title={property}>
+                        <span className="text-xs text-blue-300 truncate max-w-[45%] self-start" title={property}>
                           {property}
                         </span>
-                        <span className="text-xs text-yellow-300 truncate max-w-[50%]" title={value}>
-                          {value}
-                        </span>
+                        <div
+                          className="text-xs text-yellow-300 truncate max-w-[50%] whitespace-break-spaces"
+                          title={value}>
+                          {colorManager.isColorProperty(property) ? (
+                            <>
+                              <div className="flex items-center gap-1">
+                                <div
+                                  className="size-3 rounded-[3px] outline-[1px] outline-solid outline-white"
+                                  style={{ backgroundColor: value }}
+                                />
+                                <span>{value}</span>
+                              </div>
+                            </>
+                          ) : (
+                            value
+                          )}
+                        </div>
                       </div>
                     ))}
                   </div>
