@@ -9,6 +9,10 @@ const OVERLAY_HEIGHT = 400;
 const OVERLAY_WIDTH = 300;
 const CURSOR_OFFSET = 15;
 
+const COPY_ICON = 'content-ui/copy.svg';
+const CHECK_ICON = 'content-ui/check.svg';
+const PIN_ICON = 'content-ui/pin.svg';
+
 export default function ElementInfoOverlay() {
   const overlayRef = useRef<HTMLDivElement>(null);
   const [isCopying, setIsCopying] = useState(false);
@@ -218,27 +222,11 @@ export default function ElementInfoOverlay() {
               )}
               onClick={handleCopyCSS}
               title={isCopying ? '복사됨!' : 'CSS 복사'}>
-              {/* 복사 아이콘 */}
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-[16px] h-[16px]"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round">
-                {isCopying ? (
-                  // 체크 아이콘
-                  <path d="M20 6L9 17l-5-5" />
-                ) : (
-                  // 복사 아이콘
-                  <>
-                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                    <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
-                  </>
-                )}
-              </svg>
+              {isCopying ? (
+                <img src={chrome.runtime.getURL(CHECK_ICON)} alt="check" className="w-[16px] h-[16px]" />
+              ) : (
+                <img src={chrome.runtime.getURL(COPY_ICON)} alt="copy" className="w-[16px] h-[16px]" />
+              )}
             </button>
             <button
               className={cn(
@@ -247,19 +235,7 @@ export default function ElementInfoOverlay() {
               )}
               onClick={() => togglePin()}
               title={isPinned ? '고정 해제' : '요소 클릭 시 고정'}>
-              {/* 핀 아이콘 */}
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-[16px] h-[16px]"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                <circle cx="12" cy="10" r="3" />
-              </svg>
+              <img src={chrome.runtime.getURL(PIN_ICON)} alt="pin" className="w-[16px] h-[16px]" />
             </button>
           </div>
         </>
