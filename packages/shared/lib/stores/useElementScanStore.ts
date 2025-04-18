@@ -12,6 +12,7 @@ interface useElementScanStore {
   togglePin: (value?: boolean) => boolean;
   setHoveredElement: (element: HTMLElement | null) => void;
   setElementInfo: (elementInfo: ElementInfo | null) => void;
+  updateElementStyle: (groupName: string, property: string, value: string) => void;
 }
 
 export const useElementScanStore = create<useElementScanStore>((set, get) => ({
@@ -58,4 +59,29 @@ export const useElementScanStore = create<useElementScanStore>((set, get) => ({
   setHoveredElement: (element: HTMLElement | null) => set({ hoveredElement: element }),
 
   setElementInfo: (elementInfo: ElementInfo | null) => set({ elementInfo }),
+
+  updateElementStyle: (groupName: string, property: string, value: string) => {
+    const elementInfo = get().elementInfo;
+    if (!elementInfo) return;
+
+    const updatedStyleGroups = elementInfo.styleGroups.map(group => {
+      if (group.name === groupName) {
+        return {
+          ...group,
+          styles: {
+            ...group.styles,
+            [property]: value,
+          },
+        };
+      }
+      return group;
+    });
+
+    set({
+      elementInfo: {
+        ...elementInfo,
+        styleGroups: updatedStyleGroups,
+      },
+    });
+  },
 }));

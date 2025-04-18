@@ -1,7 +1,5 @@
-import ToggleButton from './components/ToggleButton';
-import ElementInfoOverlay from './components/ElementInfoOverlay';
+import { ToggleButton, ElementInfoOverlay, HighlightOverlay } from './components';
 import { useElementScanEvents } from './hook';
-import HighlightOverlay from './components/HighlightOverlay';
 
 export default function App() {
   useElementScanEvents();
