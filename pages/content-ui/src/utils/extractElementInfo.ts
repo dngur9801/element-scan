@@ -1,4 +1,5 @@
 import type { ElementInfo, StyleGroup } from '../../../../packages/shared/lib/types';
+import { colorManager } from './colorManager';
 
 // 제외할 스타일 속성 패턴 정의
 const excludePatterns: string[] = ['webkit-', 'moz-', 'ms-', 'o-'];
@@ -96,6 +97,23 @@ function categorizeStyles(styles: Record<string, string>): StyleGroup[] {
     styles: {},
   }));
 
+  // RGB 색상 값을 HEX로 변환하는 함수
+  const convertColorValuesToHex = (property: string, value: string): string => {
+    // 색상 속성인지 확인
+    if (colorManager.isColorProperty(property)) {
+      // 색상 추출 및 변환
+      const colorValue = colorManager.extractColorFromValue(value);
+      if (colorValue) {
+        const hexColor = colorManager.rgbToHex(colorValue);
+        // 원래 값에서 색상 부분만 변환
+        if (hexColor !== colorValue) {
+          return value.replace(colorValue, hexColor);
+        }
+      }
+    }
+    return value;
+  };
+
   styleGroupsDef.forEach((group, index) => {
     group.properties.forEach(property => {
       if (!(property in styles)) return;
@@ -103,7 +121,9 @@ function categorizeStyles(styles: Record<string, string>): StyleGroup[] {
       if (!value || excludePatterns.some(pattern => property.startsWith(pattern))) return;
       if (excludeValues.includes(value)) return;
 
-      result[index].styles[property] = value;
+      // 색상 값 변환 적용
+      const convertedValue = convertColorValuesToHex(property, value);
+      result[index].styles[property] = convertedValue;
     });
   });
 

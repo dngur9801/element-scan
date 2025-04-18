@@ -18,8 +18,6 @@ export class ColorManager implements ColorManagerInterface {
     'border-bottom-color',
     'border-left-color',
     'outline-color',
-    'text-shadow',
-    'box-shadow',
   ];
 
   /**
