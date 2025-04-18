@@ -7,10 +7,12 @@ import { colorManager } from '@src/utils/colorManager';
 
 const OVERLAY_HEIGHT = 400;
 const OVERLAY_WIDTH = 300;
+const CURSOR_OFFSET = 15;
 
 export default function ElementInfoOverlay() {
   const overlayRef = useRef<HTMLDivElement>(null);
   const [isCopying, setIsCopying] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   const { hoveredElement, elementInfo, isPinned, togglePin } = useElementScanStore(
     useShallow(state => ({
@@ -34,27 +36,40 @@ export default function ElementInfoOverlay() {
     navigator.clipboard.writeText(css);
   };
 
+  const handleMouseMove = (e: MouseEvent) => {
+    setMousePosition({ x: e.clientX, y: e.clientY });
+  };
+
+  useEffect(() => {
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
+
+  // 오버레이 위치 업데이트
   useEffect(() => {
     if (!overlayRef.current) return;
 
     if (hoveredElement) {
+      if (isPinned) return;
+
       const overlay = overlayRef.current;
-      const rect = hoveredElement.getBoundingClientRect();
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
 
-      // 좌측 하단 기본 위치 설정
-      let left = rect.left;
-      let top = rect.bottom + 10;
+      // 마우스 커서 오른쪽에 오버레이 위치 설정
+      let left = mousePosition.x + CURSOR_OFFSET;
+      let top = mousePosition.y;
 
-      // 화면 아래쪽에 공간이 부족한 경우 요소 위에 표시
-      if (top + OVERLAY_HEIGHT > viewportHeight) {
-        top = Math.max(0, rect.top - (OVERLAY_HEIGHT + 10));
+      // 오른쪽에 공간이 부족한 경우 왼쪽으로 조정
+      if (left + OVERLAY_WIDTH > viewportWidth) {
+        left = Math.max(0, mousePosition.x - OVERLAY_WIDTH - CURSOR_OFFSET);
       }
 
-      // 왼쪽에 공간이 부족한 경우 오른쪽으로 조정
-      if (left + OVERLAY_WIDTH > viewportWidth) {
-        left = Math.max(0, viewportWidth - OVERLAY_WIDTH - 10);
+      // 아래쪽에 공간이 부족한 경우 위로 조정
+      if (top + OVERLAY_HEIGHT > viewportHeight) {
+        top = Math.max(0, viewportHeight - OVERLAY_HEIGHT);
       }
 
       overlay.style.display = 'flex';
@@ -63,7 +78,7 @@ export default function ElementInfoOverlay() {
     } else {
       overlayRef.current.style.display = 'none';
     }
-  }, [hoveredElement]);
+  }, [hoveredElement, mousePosition]);
 
   return (
     <div
