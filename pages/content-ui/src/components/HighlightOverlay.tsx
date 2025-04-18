@@ -26,7 +26,7 @@ export default function HighlightOverlay() {
   return (
     <div
       ref={overlayRef}
-      className="absolute pointer-events-none z-[99999] border-2 border-[#50fa7b] bg-[rgba(80,250,123,0.15)] box-border hidden"
+      className="absolute pointer-events-none z-[99999] border-2 border-main-500 bg-[rgba(80,250,123,0.15)] box-border hidden"
       id={ELEMENT_ID.HIGHLIGHT_OVERLAY}
     />
   );

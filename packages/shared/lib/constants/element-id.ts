@@ -3,5 +3,5 @@ export const ELEMENT_ID = {
   SHADOW_ROOT: 'element-scan-shadow-root',
   TOGGLE_BTN: 'element-scan-toggle-btn',
   HIGHLIGHT_OVERLAY: 'element-scan-highlight-overlay',
-  ELEMENT_INFO_OVERLAY: 'element-scan-element-info-overlay',
+  ELEMENT_INFO_OVERLAY: 'element-scan-overlay',
 } as const;
