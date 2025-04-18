@@ -7,7 +7,7 @@ export interface ColorManagerInterface {
 /**
  * 색상 관련 기능을 처리하는 서비스 클래스
  */
-export class ColorManager implements ColorManagerInterface {
+class ColorManager implements ColorManagerInterface {
   // 색상 관련 속성 목록
   public readonly COLOR_PROPERTIES = [
     'color',
