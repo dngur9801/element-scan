@@ -1,4 +1,4 @@
-export type StyleGroupName = 'Layout' | 'Typography' | 'Flex & Grid' | 'Other';
+export type StyleGroupName = 'Layout' | 'Typography' | 'Flex & Grid';
 
 export interface StyleGroup {
   name: StyleGroupName;
