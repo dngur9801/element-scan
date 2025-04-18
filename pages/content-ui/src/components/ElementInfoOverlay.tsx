@@ -70,14 +70,14 @@ export default function ElementInfoOverlay() {
       ref={overlayRef}
       style={{ width: `${OVERLAY_WIDTH}px`, height: `${OVERLAY_HEIGHT}px` }}
       className={cn(
-        `fixed z-[99999] bg-white/90 text-white rounded-md shadow-[0_8px_32px_rgba(0,0,0,0.15)] backdrop-blur-lg text-sm font-mono leading-normal transition-opacity duration-300 ease-in-out box-border flex flex-col border border-gray-200`,
+        `fixed z-[99999] bg-white/90 text-white rounded-md shadow-[0_4px_20px_rgba(0,0,0,0.08)] backdrop-blur-lg text-sm font-mono leading-normal transition-opacity duration-300 ease-in-out box-border flex flex-col border border-gray-100`,
         hoveredElement ? 'opacity-100' : 'opacity-0',
       )}
       id={ELEMENT_ID.ELEMENT_INFO_OVERLAY}>
       {elementInfo ? (
         <>
           {/* 헤더 영역 */}
-          <div className="p-3 pb-2 bg-white/50 backdrop-blur-sm border-b border-gray-200">
+          <div className="p-3 pb-2 bg-white/50 backdrop-blur-sm">
             <div className="font-mono text-sm text-black font-bold">
               {elementInfo.tagName}.{elementInfo.className}
             </div>
@@ -89,7 +89,7 @@ export default function ElementInfoOverlay() {
           </div>
 
           {/* 콘텐츠 영역 */}
-          <div className="flex-1 overflow-y-auto font-mono bg-white/80">
+          <div className="flex-1 overflow-y-auto font-mono bg-white/80 pb-10">
             {/* 스타일 없는 경우 */}
             {(!elementInfo.styleGroups || elementInfo.styleGroups.length === 0) && (
               <div className="p-3 text-xs text-gray-700 text-center">추출된 스타일이 없습니다.</div>
@@ -98,7 +98,7 @@ export default function ElementInfoOverlay() {
             {/* 스타일 그룹별 표시 */}
             {elementInfo.styleGroups &&
               elementInfo.styleGroups.map(group => (
-                <div key={group.name} className="mb-2">
+                <div key={group.name}>
                   {/* 그룹 헤더 */}
                   <div className="w-full flex justify-between items-center p-2 bg-gray-100/80 backdrop-blur-sm">
                     <div className="flex items-center">
@@ -109,14 +109,14 @@ export default function ElementInfoOverlay() {
                   {/* 그룹 내용 */}
                   <div className="p-2">
                     {Object.entries(group.styles).map(([property, value]) => (
-                      <div
-                        key={property}
-                        className="flex justify-between items-center mb-1 px-1 py-1 hover:bg-gray-100/60 rounded">
-                        <span className="text-xs text-gray-600 truncate max-w-[45%] self-start" title={property}>
+                      <div key={property} className="flex items-center px-1 py-1">
+                        <span
+                          className="text-[11px] text-gray-600 truncate max-w-[45%] self-start width-[120px] flex-1"
+                          title={property}>
                           {property}
                         </span>
                         <div
-                          className="text-xs text-gray-600 truncate max-w-[50%] whitespace-break-spaces"
+                          className="text-[11px] text-gray-600 truncate max-w-[50%] whitespace-break-spaces"
                           title={value}>
                           {colorManager.isColorProperty(property) ? (
                             <>

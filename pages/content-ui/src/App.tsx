@@ -9,8 +9,8 @@ export default function App() {
   return (
     <>
       <ToggleButton />
-      <ElementInfoOverlay />
       <HighlightOverlay />
+      <ElementInfoOverlay />
     </>
   );
 }
