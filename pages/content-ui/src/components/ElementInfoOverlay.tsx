@@ -13,7 +13,7 @@ const CURSOR_OFFSET = 15;
 const COPY_ICON = 'content-ui/copy.svg';
 const CHECK_ICON = 'content-ui/check.svg';
 const PIN_ICON = 'content-ui/pin.svg';
-
+const DRAG_ICON = 'content-ui/drag.svg';
 export default function ElementInfoOverlay() {
   const overlayRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<Draggable>(null);
@@ -69,7 +69,7 @@ export default function ElementInfoOverlay() {
       if (!overlayRef.current) return;
 
       if (hoveredElement) {
-        if (isPinned) return; // 핀 고정 상태에서는 위치 업데이트 하지 않음
+        if (isPinned) return;
 
         const overlay = overlayRef.current;
         const viewportWidth = window.innerWidth;
@@ -156,8 +156,12 @@ export default function ElementInfoOverlay() {
                   {elementInfo.tagName}.{elementInfo.className}
                 </p>
                 {/* 드래그 핸들러 추가 */}
-                <div className="drag-handle cursor-move">
-                  <div className="w-4 h-4 bg-main-900 rounded-full"></div>
+                <div className="drag-handle cursor-move p-1">
+                  <img
+                    src={chrome.runtime.getURL(DRAG_ICON)}
+                    alt="drag"
+                    className="w-[16px] h-[16px] pointer-events-none"
+                  />
                 </div>
               </div>
               <div className="flex justify-between items-center mt-1">
