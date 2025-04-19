@@ -1,4 +1,3 @@
-// hooks/useElementScanEvents.ts
 import { useEffect } from 'react';
 import { ELEMENT_ID, useElementScanStore } from '@extension/shared';
 import { extractElementInfo } from '@src/utils';

@@ -1,4 +1,4 @@
-import type { ElementInfo, StyleGroup } from '../../../../packages/shared/lib/types';
+import { type ElementInfo, type StyleGroup } from '@extension/shared';
 import { colorManager } from './colorManager';
 
 // 제외할 스타일 속성 패턴 정의
@@ -144,6 +144,7 @@ function mergeBoxModelProperties(
 
     if (top || right || bottom || left) {
       newStyles[property] = `${top ?? '0px'} ${right ?? '0px'} ${bottom ?? '0px'} ${left ?? '0px'}`;
+
       delete newStyles[`${property}-top`];
       delete newStyles[`${property}-right`];
       delete newStyles[`${property}-bottom`];

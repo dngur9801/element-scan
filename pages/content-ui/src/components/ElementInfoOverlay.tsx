@@ -5,15 +5,16 @@ import { useElementScanStore, ELEMENT_ID } from '@extension/shared';
 import { cn } from '@extension/ui';
 import { styleGroupsToCSSText } from '@src/utils';
 import StyleGroups from './StyleGroups';
+import {
+  CHECK_ICON,
+  COPY_ICON,
+  DRAG_ICON,
+  PIN_ICON,
+  OVERLAY_HEIGHT,
+  OVERLAY_WIDTH,
+  CURSOR_OFFSET,
+} from '@src/constants';
 
-const OVERLAY_HEIGHT = 400;
-const OVERLAY_WIDTH = 300;
-const CURSOR_OFFSET = 15;
-
-const COPY_ICON = 'content-ui/copy.svg';
-const CHECK_ICON = 'content-ui/check.svg';
-const PIN_ICON = 'content-ui/pin.svg';
-const DRAG_ICON = 'content-ui/drag.svg';
 export default function ElementInfoOverlay() {
   const overlayRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<Draggable>(null);
