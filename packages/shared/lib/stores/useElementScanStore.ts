@@ -35,6 +35,7 @@ export const useElementScanStore = create<useElementScanStore>((set, get) => ({
       elementScanActive: false,
       isPinned: false,
       hoveredElement: null,
+      selectedElement: null,
     }),
 
   toggleScan: (value?: boolean) => {
