@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react';
-import { useElementScanStore, ELEMENT_ID } from '@extension/shared';
+import { useElementScanStore } from '@extension/shared';
 import { useShallow } from 'zustand/shallow';
+import { ELEMENT_ID, Z_INDEX } from '../constants';
+import { cn } from '@extension/ui';
 
 export default function ElementConnectionLine() {
   const { selectedElement, hoveredElement } = useElementScanStore(
@@ -367,44 +369,44 @@ export default function ElementConnectionLine() {
       {/* 각 방향의 점선 */}
       <div
         ref={topLineRef}
-        className={`${lineClassName} w-0`}
+        className={cn(lineClassName, 'w-0', Z_INDEX.SPACING_GUIDE_LINE)}
         id={`${ELEMENT_ID.SELECTED_HIGHLIGHT_OVERLAY}-top-line`}
       />
       <div
         ref={rightLineRef}
-        className={`${lineClassName} h-0`}
+        className={cn(lineClassName, 'h-0', Z_INDEX.SPACING_GUIDE_LINE)}
         id={`${ELEMENT_ID.SELECTED_HIGHLIGHT_OVERLAY}-right-line`}
       />
       <div
         ref={bottomLineRef}
-        className={`${lineClassName} w-0`}
+        className={cn(lineClassName, 'w-0', Z_INDEX.SPACING_GUIDE_LINE)}
         id={`${ELEMENT_ID.SELECTED_HIGHLIGHT_OVERLAY}-bottom-line`}
       />
       <div
         ref={leftLineRef}
-        className={`${lineClassName} h-0`}
+        className={cn(lineClassName, 'h-0', Z_INDEX.SPACING_GUIDE_LINE)}
         id={`${ELEMENT_ID.SELECTED_HIGHLIGHT_OVERLAY}-left-line`}
       />
 
       {/* 각 방향의 거리 표시 */}
       <div
         ref={topDistanceRef}
-        className={distanceClassName}
+        className={cn(distanceClassName, Z_INDEX.SPACING_GUIDE_LINE)}
         id={`${ELEMENT_ID.SELECTED_HIGHLIGHT_OVERLAY}-top-distance`}
       />
       <div
         ref={rightDistanceRef}
-        className={distanceClassName}
+        className={cn(distanceClassName, Z_INDEX.SPACING_GUIDE_LINE)}
         id={`${ELEMENT_ID.SELECTED_HIGHLIGHT_OVERLAY}-right-distance`}
       />
       <div
         ref={bottomDistanceRef}
-        className={distanceClassName}
+        className={cn(distanceClassName, Z_INDEX.SPACING_GUIDE_LINE)}
         id={`${ELEMENT_ID.SELECTED_HIGHLIGHT_OVERLAY}-bottom-distance`}
       />
       <div
         ref={leftDistanceRef}
-        className={distanceClassName}
+        className={cn(distanceClassName, Z_INDEX.SPACING_GUIDE_LINE)}
         id={`${ELEMENT_ID.SELECTED_HIGHLIGHT_OVERLAY}-left-distance`}
       />
     </>

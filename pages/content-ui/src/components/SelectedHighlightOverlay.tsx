@@ -1,4 +1,5 @@
-import { ELEMENT_ID, useElementScanStore } from '@extension/shared';
+import { useElementScanStore } from '@extension/shared';
+import { ELEMENT_ID, Z_INDEX } from '../constants';
 import Overlay from './common/Overlay';
 
 export default function SelectedHighlightOverlay() {
@@ -10,6 +11,7 @@ export default function SelectedHighlightOverlay() {
       borderColor="border-sub-500"
       bgColor="bg-sub-200-opacity"
       id={ELEMENT_ID.SELECTED_HIGHLIGHT_OVERLAY}
+      zIndex={Z_INDEX.SELECTED_HIGHLIGHT_OVERLAY}
     />
   );
 }

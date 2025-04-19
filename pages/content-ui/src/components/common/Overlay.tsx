@@ -1,3 +1,5 @@
+import { cn } from '@extension/ui';
+import { Z_INDEX } from '@src/constants';
 import { useRef, useEffect } from 'react';
 
 type OverlayProps = {
@@ -5,6 +7,7 @@ type OverlayProps = {
   borderColor: string;
   bgColor: string;
   id: string;
+  zIndex: number;
   shouldShowGuidelines?: boolean;
   condition?: boolean;
 };
@@ -14,6 +17,7 @@ export default function Overlay({
   borderColor,
   bgColor,
   id,
+  zIndex,
   shouldShowGuidelines = true,
   condition = true,
 }: OverlayProps) {
@@ -84,30 +88,21 @@ export default function Overlay({
     }
   }, [element, condition, shouldShowGuidelines]);
 
+  const guidelineClassName = `absolute pointer-events-none border-0 border-dashed ${borderColor} box-border hidden top-0 left-0`;
+
   return (
     <>
       <div
         ref={overlayRef}
-        className={`absolute pointer-events-none z-[99999] border-2 ${borderColor} ${bgColor} box-border hidden top-0 left-0`}
+        className={`absolute pointer-events-none border-2 ${borderColor} ${bgColor} box-border hidden top-0 left-0`}
+        style={{ zIndex: zIndex }}
         id={id}
       />
 
-      <div
-        ref={topRef}
-        className={`absolute pointer-events-none z-[99998] h-[1px] border-0 border-t border-dashed ${borderColor} box-border hidden top-0 left-0`}
-      />
-      <div
-        ref={leftRef}
-        className={`absolute pointer-events-none z-[99998] w-[1px] border-0 border-l border-dashed ${borderColor} box-border hidden top-0 left-0`}
-      />
-      <div
-        ref={rightRef}
-        className={`absolute pointer-events-none z-[99998] h-[1px] border-0 border-l border-dashed ${borderColor} box-border hidden top-0 left-0`}
-      />
-      <div
-        ref={bottomRef}
-        className={`absolute pointer-events-none z-[99998] w-[1px] border-0 border-t border-dashed ${borderColor} box-border hidden top-0 left-0`}
-      />
+      <div ref={topRef} className={cn(guidelineClassName, 'h-[1px]', 'border-t', Z_INDEX.ELEMENT_GUIDE_LINE)} />
+      <div ref={leftRef} className={cn(guidelineClassName, 'w-[1px]', 'border-l', Z_INDEX.ELEMENT_GUIDE_LINE)} />
+      <div ref={rightRef} className={cn(guidelineClassName, 'h-[1px]', 'border-l', Z_INDEX.ELEMENT_GUIDE_LINE)} />
+      <div ref={bottomRef} className={cn(guidelineClassName, 'w-[1px]', 'border-t', Z_INDEX.ELEMENT_GUIDE_LINE)} />
     </>
   );
 }

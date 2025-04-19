@@ -1,11 +1,12 @@
 import { cn } from '@extension/ui';
-import { useElementScanStore, ELEMENT_ID } from '@extension/shared';
+import { useElementScanStore } from '@extension/shared';
+import { ELEMENT_ID, Z_INDEX } from '../constants';
 
 export default function ToggleButton() {
   const { elementScanActive, toggleScan } = useElementScanStore();
 
   return (
-    <div className="fixed top-2 right-2 z-[9999]">
+    <div className="fixed top-2 right-2" style={{ zIndex: Z_INDEX.TOGGLE_BTN }}>
       <button
         id={ELEMENT_ID.TOGGLE_BTN}
         onClick={e => {

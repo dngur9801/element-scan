@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useShallow } from 'zustand/shallow';
 import Draggable from 'react-draggable';
-import { useElementScanStore, ELEMENT_ID } from '@extension/shared';
+import { useElementScanStore } from '@extension/shared';
 import { cn } from '@extension/ui';
 import { styleGroupsToCSSText } from '@src/utils';
 import StyleGroups from './StyleGroups';
@@ -13,7 +13,9 @@ import {
   OVERLAY_HEIGHT,
   OVERLAY_WIDTH,
   CURSOR_OFFSET,
+  Z_INDEX,
 } from '@src/constants';
+import { ELEMENT_ID } from '../constants';
 
 export default function ElementInfoOverlay() {
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -105,9 +107,9 @@ export default function ElementInfoOverlay() {
       handle=".drag-handle">
       <div
         ref={overlayRef}
-        style={{ width: `${OVERLAY_WIDTH}px`, height: `${OVERLAY_HEIGHT}px` }}
+        style={{ width: `${OVERLAY_WIDTH}px`, height: `${OVERLAY_HEIGHT}px`, zIndex: Z_INDEX.ELEMENT_INFO_OVERLAY }}
         className={cn(
-          `fixed z-[99999] bg-white/90 text-white rounded-md shadow-[0_4px_20px_rgba(0,0,0,0.08)] backdrop-blur-lg text-sm font-mono leading-normal transition-opacity duration-300 ease-in-out box-border flex flex-col border border-gray-100`,
+          `fixed bg-white/90 text-white rounded-md shadow-[0_4px_20px_rgba(0,0,0,0.08)] backdrop-blur-lg text-sm font-mono leading-normal transition-opacity duration-300 ease-in-out box-border flex flex-col border border-gray-100`,
           hoveredElement ? 'opacity-100' : 'opacity-0',
         )}
         id={ELEMENT_ID.ELEMENT_INFO_OVERLAY}>
