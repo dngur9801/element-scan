@@ -2,7 +2,7 @@ import { createRoot } from 'react-dom/client';
 import App from '@src/App';
 // @ts-expect-error Because file doesn't exist before build
 import tailwindcssOutput from '../dist/tailwind-output.css?inline';
-import { ELEMENT_ID } from './constants';
+import { ELEMENT_ID } from '@src/constants';
 
 const root = document.createElement('div');
 root.id = ELEMENT_ID.ROOT;

@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react';
 import { useElementScanStore } from '@extension/shared';
 import { useShallow } from 'zustand/shallow';
-import { ELEMENT_ID, Z_INDEX } from '../constants';
+import { ELEMENT_ID, Z_INDEX } from '@src/constants';
 import { cn } from '@extension/ui';
 
-export default function ElementConnectionLine() {
+export default function SpacingGuideLine() {
   const { selectedElement, hoveredElement } = useElementScanStore(
     useShallow(state => ({
       selectedElement: state.selectedElement,

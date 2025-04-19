@@ -14,8 +14,8 @@ import {
   OVERLAY_WIDTH,
   CURSOR_OFFSET,
   Z_INDEX,
+  ELEMENT_ID,
 } from '@src/constants';
-import { ELEMENT_ID } from '../constants';
 
 export default function ElementInfoOverlay() {
   const overlayRef = useRef<HTMLDivElement>(null);

@@ -1,6 +1,6 @@
 import { useElementScanStore } from '@extension/shared';
 import { useShallow } from 'zustand/shallow';
-import { ELEMENT_ID, Z_INDEX } from '../constants';
+import { ELEMENT_ID, Z_INDEX } from '@src/constants';
 import Overlay from './common/Overlay';
 
 export default function HoverHighlightOverlay() {
