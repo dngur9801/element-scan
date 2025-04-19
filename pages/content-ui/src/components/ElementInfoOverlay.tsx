@@ -114,7 +114,7 @@ export default function ElementInfoOverlay() {
         {elementInfo ? (
           <>
             {/* 헤더 영역 - 드래그 핸들로 사용 */}
-            <div className="p-3 pb-2 bg-white/50 backdrop-blur-sm">
+            <div className="p-3 pb-2">
               <div className="flex justify-between items-center">
                 <p className="font-mono text-sm text-main-900 font-bold">
                   {elementInfo.tagName}.{elementInfo.className}
@@ -136,7 +136,7 @@ export default function ElementInfoOverlay() {
             </div>
 
             {/* 콘텐츠 영역 */}
-            <div className="flex-1 overflow-y-auto font-mono bg-white/80 pb-10">
+            <div className="flex-1 overflow-y-auto font-mono pb-10">
               {/* 스타일 없는 경우 */}
               {(!elementInfo.styleGroups || elementInfo.styleGroups.length === 0) && (
                 <div className="p-3 text-xs text-gray-700 text-center">추출된 스타일이 없습니다.</div>
