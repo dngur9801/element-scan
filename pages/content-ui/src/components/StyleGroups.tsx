@@ -12,9 +12,9 @@ export default function StyleGroups({ groups }: Props) {
   const [editValue, setEditValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { hoveredElement, updateElementStyle } = useElementScanStore(
+  const { selectedElement, updateElementStyle } = useElementScanStore(
     useShallow(state => ({
-      hoveredElement: state.hoveredElement,
+      selectedElement: state.selectedElement,
       updateElementStyle: state.updateElementStyle,
     })),
   );
@@ -25,13 +25,13 @@ export default function StyleGroups({ groups }: Props) {
   };
 
   const handleStyleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!editingStyle || !hoveredElement) return;
+    if (!editingStyle || !selectedElement) return;
 
     const newValue = e.target.value;
     setEditValue(newValue);
 
     if (editingStyle.property && newValue) {
-      hoveredElement.style.setProperty(editingStyle.property, newValue);
+      selectedElement.style.setProperty(editingStyle.property, newValue);
 
       updateElementStyle(editingStyle.groupName, editingStyle.property, newValue);
     }
