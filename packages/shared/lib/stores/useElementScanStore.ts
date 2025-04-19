@@ -5,12 +5,14 @@ interface useElementScanStore {
   elementScanActive: boolean;
   isPinned: boolean;
   hoveredElement: HTMLElement | null;
+  selectedElement: HTMLElement | null;
   elementInfo: ElementInfo | null;
 
   reset: () => void;
   toggleScan: (value?: boolean) => boolean;
   togglePin: (value?: boolean) => boolean;
   setHoveredElement: (element: HTMLElement | null) => void;
+  setSelectedElement: (element: HTMLElement | null) => void;
   setElementInfo: (elementInfo: ElementInfo | null) => void;
   updateElementStyle: (groupName: string, property: string, value: string) => void;
 }
@@ -19,6 +21,7 @@ export const useElementScanStore = create<useElementScanStore>((set, get) => ({
   elementScanActive: false,
   isPinned: false,
   hoveredElement: null,
+  selectedElement: null,
   elementInfo: {
     tagName: '',
     className: '',
@@ -57,6 +60,8 @@ export const useElementScanStore = create<useElementScanStore>((set, get) => ({
   },
 
   setHoveredElement: (element: HTMLElement | null) => set({ hoveredElement: element }),
+
+  setSelectedElement: (element: HTMLElement | null) => set({ selectedElement: element }),
 
   setElementInfo: (elementInfo: ElementInfo | null) => set({ elementInfo }),
 

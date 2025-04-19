@@ -3,8 +3,17 @@ import { ELEMENT_ID, useElementScanStore } from '@extension/shared';
 import { extractElementInfo } from '@src/utils';
 
 export const useElementScanEvents = () => {
-  const { elementScanActive, isPinned, hoveredElement, setHoveredElement, toggleScan, togglePin, setElementInfo } =
-    useElementScanStore();
+  const {
+    elementScanActive,
+    isPinned,
+    hoveredElement,
+    selectedElement,
+    setHoveredElement,
+    toggleScan,
+    togglePin,
+    setElementInfo,
+    setSelectedElement,
+  } = useElementScanStore();
 
   useEffect(() => {
     if (!elementScanActive) return;
@@ -45,6 +54,7 @@ export const useElementScanEvents = () => {
         setHoveredElement(target);
       }
 
+      setSelectedElement(target);
       togglePin();
     };
 
@@ -64,5 +74,5 @@ export const useElementScanEvents = () => {
       document.removeEventListener('click', handleClick, true);
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [elementScanActive, hoveredElement, isPinned]);
+  }, [elementScanActive, hoveredElement, isPinned, selectedElement]);
 };

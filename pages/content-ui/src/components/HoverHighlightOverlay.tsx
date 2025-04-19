@@ -1,7 +1,7 @@
 import { useElementScanStore, ELEMENT_ID } from '@extension/shared';
 import { useRef, useEffect } from 'react';
 
-export default function HighlightOverlay() {
+export default function HoverHighlightOverlay() {
   const overlayRef = useRef<HTMLDivElement>(null);
 
   const topRef = useRef<HTMLDivElement>(null);

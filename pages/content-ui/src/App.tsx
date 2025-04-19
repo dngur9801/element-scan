@@ -1,4 +1,4 @@
-import { ToggleButton, ElementInfoOverlay, HighlightOverlay } from './components';
+import { ToggleButton, ElementInfoOverlay, HoverHighlightOverlay } from './components';
 import { useElementScanEvents } from './hook';
 
 export default function App() {
@@ -7,7 +7,7 @@ export default function App() {
   return (
     <>
       <ToggleButton />
-      <HighlightOverlay />
+      <HoverHighlightOverlay />
       <ElementInfoOverlay />
     </>
   );
