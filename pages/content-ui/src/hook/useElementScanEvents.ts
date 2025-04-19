@@ -21,13 +21,14 @@ export const useElementScanEvents = () => {
     const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       if (!target || !(target instanceof HTMLElement)) return;
+      if (target === hoveredElement) return;
 
-      if (target === hoveredElement || isPinned) return;
-
-      const elementInfo = extractElementInfo(target);
-
-      setElementInfo(elementInfo);
       setHoveredElement(target);
+
+      if (!selectedElement) {
+        const elementInfo = extractElementInfo(target);
+        setElementInfo(elementInfo);
+      }
     };
 
     const handleMouseOut = (e: MouseEvent) => {
@@ -54,7 +55,7 @@ export const useElementScanEvents = () => {
         setHoveredElement(target);
       }
 
-      setSelectedElement(target);
+      setSelectedElement(selectedElement ? null : target);
       togglePin();
     };
 
