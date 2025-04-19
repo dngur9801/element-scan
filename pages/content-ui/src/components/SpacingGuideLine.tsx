@@ -180,14 +180,20 @@ export default function SpacingGuideLine() {
     topLineRef.current.style.height = `${height}px`;
     topLineRef.current.style.display = 'block';
 
-    // 거리 표시 (중간 지점에 배치)
+    // 거리 표시 (정중앙에 배치)
     const distance = Math.round(height);
     const middleY = endY + height / 2;
 
-    topDistanceRef.current.textContent = `${distance}px`;
-    topDistanceRef.current.style.left = `${startX + 10}px`; // 선에서 약간 오른쪽으로 띄움
-    topDistanceRef.current.style.top = `${middleY - 10}px`; // 중앙에 배치하되 약간 위로 조정
-    topDistanceRef.current.style.display = 'block';
+    // 텍스트 중앙 정렬을 위한 설정
+    if (topDistanceRef.current) {
+      topDistanceRef.current.textContent = `${distance}px`;
+
+      // DIV를 정중앙에 배치
+      topDistanceRef.current.style.left = `${startX}px`;
+      topDistanceRef.current.style.top = `${middleY}px`;
+      topDistanceRef.current.style.transform = 'translate(-50%, -50%)'; // 중앙 정렬
+      topDistanceRef.current.style.display = 'block';
+    }
   };
 
   // 오른쪽 간격 표시
@@ -238,14 +244,20 @@ export default function SpacingGuideLine() {
     rightLineRef.current.style.width = `${width}px`;
     rightLineRef.current.style.display = 'block';
 
-    // 거리 표시 (중간 지점에 배치)
+    // 거리 표시 (정중앙에 배치)
     const distance = Math.round(width);
     const middleX = startX + width / 2;
 
-    rightDistanceRef.current.textContent = `${distance}px`;
-    rightDistanceRef.current.style.left = `${middleX - 20}px`; // 중앙에 배치하되 약간 왼쪽으로 조정
-    rightDistanceRef.current.style.top = `${startY - 25}px`; // 선 위에 배치
-    rightDistanceRef.current.style.display = 'block';
+    // 텍스트 중앙 정렬을 위한 설정
+    if (rightDistanceRef.current) {
+      rightDistanceRef.current.textContent = `${distance}px`;
+
+      // DIV를 정중앙에 배치
+      rightDistanceRef.current.style.left = `${middleX}px`;
+      rightDistanceRef.current.style.top = `${startY}px`;
+      rightDistanceRef.current.style.transform = 'translate(-50%, -50%)'; // 중앙 정렬
+      rightDistanceRef.current.style.display = 'block';
+    }
   };
 
   // 아래쪽 간격 표시
@@ -296,14 +308,20 @@ export default function SpacingGuideLine() {
     bottomLineRef.current.style.height = `${height}px`;
     bottomLineRef.current.style.display = 'block';
 
-    // 거리 표시 (중간 지점에 배치)
+    // 거리 표시 (정중앙에 배치)
     const distance = Math.round(height);
     const middleY = startY + height / 2;
 
-    bottomDistanceRef.current.textContent = `${distance}px`;
-    bottomDistanceRef.current.style.left = `${startX + 10}px`; // 선에서 약간 오른쪽으로 띄움
-    bottomDistanceRef.current.style.top = `${middleY - 10}px`; // 중앙에 배치하되 약간 위로 조정
-    bottomDistanceRef.current.style.display = 'block';
+    // 텍스트 중앙 정렬을 위한 설정
+    if (bottomDistanceRef.current) {
+      bottomDistanceRef.current.textContent = `${distance}px`;
+
+      // DIV를 정중앙에 배치
+      bottomDistanceRef.current.style.left = `${startX}px`;
+      bottomDistanceRef.current.style.top = `${middleY}px`;
+      bottomDistanceRef.current.style.transform = 'translate(-50%, -50%)'; // 중앙 정렬
+      bottomDistanceRef.current.style.display = 'block';
+    }
   };
 
   // 왼쪽 간격 표시
@@ -354,21 +372,25 @@ export default function SpacingGuideLine() {
     leftLineRef.current.style.width = `${width}px`;
     leftLineRef.current.style.display = 'block';
 
-    // 거리 표시 (중간 지점에 배치)
+    // 거리 표시 (정중앙에 배치)
     const distance = Math.round(width);
     const middleX = endX + width / 2;
 
-    leftDistanceRef.current.textContent = `${distance}px`;
-    leftDistanceRef.current.style.left = `${middleX - 20}px`; // 중앙에 배치하되 약간 왼쪽으로 조정
-    leftDistanceRef.current.style.top = `${startY - 25}px`; // 선 위에 배치
-    leftDistanceRef.current.style.display = 'block';
+    // 텍스트 중앙 정렬을 위한 설정
+    if (leftDistanceRef.current) {
+      leftDistanceRef.current.textContent = `${distance}px`;
+
+      // DIV를 정중앙에 배치
+      leftDistanceRef.current.style.left = `${middleX}px`;
+      leftDistanceRef.current.style.top = `${startY}px`;
+      leftDistanceRef.current.style.transform = 'translate(-50%, -50%)'; // 중앙 정렬
+      leftDistanceRef.current.style.display = 'block';
+    }
   };
 
-  const lineClassName = 'absolute pointer-events-none z-[99997] border-2 border-dashed border-sub-500 hidden';
+  const lineClassName = 'absolute pointer-events-none border-2 border-dashed border-gray-400 hidden';
   const distanceClassName =
-    'absolute pointer-events-none z-[99998] bg-sub-500 text-white px-2 py-0.5 rounded text-xs font-mono hidden';
-
-  console.log('here');
+    'absolute pointer-events-none z-[99998] bg-gray-700 text-white px-1.5 py-0.5 rounded text-xs font-mono hidden text-[10px]';
 
   return (
     <>
@@ -377,21 +399,33 @@ export default function SpacingGuideLine() {
         ref={topLineRef}
         className={cn(lineClassName, 'w-0', Z_INDEX.SPACING_GUIDE_LINE)}
         id={`${ELEMENT_ID.SELECTED_HIGHLIGHT_OVERLAY}-top-line`}
+        style={{
+          zIndex: Z_INDEX.SPACING_GUIDE_LINE,
+        }}
       />
       <div
         ref={rightLineRef}
         className={cn(lineClassName, 'h-0', Z_INDEX.SPACING_GUIDE_LINE)}
         id={`${ELEMENT_ID.SELECTED_HIGHLIGHT_OVERLAY}-right-line`}
+        style={{
+          zIndex: Z_INDEX.SPACING_GUIDE_LINE,
+        }}
       />
       <div
         ref={bottomLineRef}
         className={cn(lineClassName, 'w-0', Z_INDEX.SPACING_GUIDE_LINE)}
         id={`${ELEMENT_ID.SELECTED_HIGHLIGHT_OVERLAY}-bottom-line`}
+        style={{
+          zIndex: Z_INDEX.SPACING_GUIDE_LINE,
+        }}
       />
       <div
         ref={leftLineRef}
         className={cn(lineClassName, 'h-0', Z_INDEX.SPACING_GUIDE_LINE)}
         id={`${ELEMENT_ID.SELECTED_HIGHLIGHT_OVERLAY}-left-line`}
+        style={{
+          zIndex: Z_INDEX.SPACING_GUIDE_LINE,
+        }}
       />
 
       {/* 각 방향의 거리 표시 */}
