@@ -15,7 +15,7 @@ const manifest = {
   version: packageJson.version,
   description: 'Element Scan',
   host_permissions: ['<all_urls>'],
-  permissions: ['storage', 'scripting', 'tabs', 'notifications', 'sidePanel'],
+  permissions: [],
   options_page: 'options/index.html',
   background: {
     service_worker: 'background.js',
