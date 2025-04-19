@@ -34,8 +34,7 @@ export default function Overlay({
       const overlay = overlayRef.current;
 
       // 메인 오버레이 포지셔닝
-      overlay.style.top = `${rect.top + window.scrollY}px`;
-      overlay.style.left = `${rect.left + window.scrollX}px`;
+      overlay.style.transform = `translate(${rect.left + window.scrollX}px, ${rect.top + window.scrollY}px)`;
       overlay.style.width = `${rect.width}px`;
       overlay.style.height = `${rect.height}px`;
       overlay.style.display = 'block';
@@ -44,32 +43,28 @@ export default function Overlay({
       if (shouldShowGuidelines) {
         // 수평 가이드라인 (top)
         if (topRef.current) {
-          topRef.current.style.top = `${rect.top + window.scrollY + 1}px`;
-          topRef.current.style.left = '0px';
+          topRef.current.style.transform = `translate(0px, ${rect.top + window.scrollY + 1}px)`;
           topRef.current.style.width = `100vw`;
           topRef.current.style.display = 'block';
         }
 
         // 수직 가이드라인 (left)
         if (leftRef.current) {
-          leftRef.current.style.top = '0px';
-          leftRef.current.style.left = `${rect.left + window.scrollX}px`;
+          leftRef.current.style.transform = `translate(${rect.left + window.scrollX}px, 0px)`;
           leftRef.current.style.height = `${document.documentElement.scrollHeight}px`;
           leftRef.current.style.display = 'block';
         }
 
         // 수직 가이드라인 (right)
         if (rightRef.current) {
-          rightRef.current.style.top = '0px';
-          rightRef.current.style.left = `${rect.right + window.scrollX}px`;
+          rightRef.current.style.transform = `translate(${rect.right + window.scrollX - 1}px, 0px)`;
           rightRef.current.style.height = `${document.documentElement.scrollHeight}px`;
           rightRef.current.style.display = 'block';
         }
 
         // 수평 가이드라인 (bottom)
         if (bottomRef.current) {
-          bottomRef.current.style.top = `${rect.bottom + window.scrollY - 1}px`;
-          bottomRef.current.style.left = '0px';
+          bottomRef.current.style.transform = `translate(0px, ${rect.bottom + window.scrollY - 1}px)`;
           bottomRef.current.style.width = `100vw`;
           bottomRef.current.style.display = 'block';
         }
@@ -93,25 +88,25 @@ export default function Overlay({
     <>
       <div
         ref={overlayRef}
-        className={`absolute pointer-events-none z-[99999] border-2 ${borderColor} ${bgColor} box-border hidden`}
+        className={`absolute pointer-events-none z-[99999] border-2 ${borderColor} ${bgColor} box-border hidden top-0 left-0`}
         id={id}
       />
 
       <div
         ref={topRef}
-        className={`absolute pointer-events-none z-[99998] h-[1px] border-0 border-t border-dashed ${borderColor} box-border hidden`}
+        className={`absolute pointer-events-none z-[99998] h-[1px] border-0 border-t border-dashed ${borderColor} box-border hidden top-0 left-0`}
       />
       <div
         ref={leftRef}
-        className={`absolute pointer-events-none z-[99998] w-[1px] border-0 border-l border-dashed ${borderColor} box-border hidden`}
+        className={`absolute pointer-events-none z-[99998] w-[1px] border-0 border-l border-dashed ${borderColor} box-border hidden top-0 left-0`}
       />
       <div
         ref={rightRef}
-        className={`absolute pointer-events-none z-[99998] h-[1px] border-0 border-l border-dashed ${borderColor} box-border hidden`}
+        className={`absolute pointer-events-none z-[99998] h-[1px] border-0 border-l border-dashed ${borderColor} box-border hidden top-0 left-0`}
       />
       <div
         ref={bottomRef}
-        className={`absolute pointer-events-none z-[99998] w-[1px] border-0 border-t border-dashed ${borderColor} box-border hidden`}
+        className={`absolute pointer-events-none z-[99998] w-[1px] border-0 border-t border-dashed ${borderColor} box-border hidden top-0 left-0`}
       />
     </>
   );
