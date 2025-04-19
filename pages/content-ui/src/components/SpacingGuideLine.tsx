@@ -388,7 +388,7 @@ export default function SpacingGuideLine() {
     }
   };
 
-  const lineClassName = 'absolute pointer-events-none border-2 border-dashed border-gray-400 hidden';
+  const lineClassName = 'absolute pointer-events-none border-[1px] border-dashed border-gray-400 hidden';
   const distanceClassName =
     'absolute pointer-events-none z-[99998] bg-gray-700 text-white px-1.5 py-0.5 rounded text-xs font-mono hidden text-[10px]';
 
