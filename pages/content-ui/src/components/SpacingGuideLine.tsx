@@ -4,6 +4,15 @@ import { useShallow } from 'zustand/shallow';
 import { ELEMENT_ID, Z_INDEX } from '@src/constants';
 import { cn } from '@extension/ui';
 
+type Direction = 'top' | 'right' | 'bottom' | 'left';
+
+interface LineConfig {
+  ref: React.RefObject<HTMLDivElement | null>;
+  distanceRef: React.RefObject<HTMLDivElement | null>;
+  cssProps: string;
+  isHorizontal: boolean;
+}
+
 export default function SpacingGuideLine() {
   const { selectedElement, hoveredElement } = useElementScanStore(
     useShallow(state => ({
@@ -24,44 +33,207 @@ export default function SpacingGuideLine() {
   const bottomDistanceRef = useRef<HTMLDivElement>(null);
   const leftDistanceRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (!selectedElement || !hoveredElement) {
-      hideAllLines();
-      return;
-    }
-
-    if (hoveredElement.id === ELEMENT_ID.ROOT) {
-      hideAllLines();
-      return;
-    }
-
-    if (selectedElement === hoveredElement) {
-      hideAllLines();
-      return;
-    }
-
-    const selectedRect = selectedElement.getBoundingClientRect();
-    const hoveredRect = hoveredElement.getBoundingClientRect();
-
-    // 요소 간의 관계 확인
-    const isParentChild = isParentChildRelationship(selectedElement, hoveredElement);
-
-    // 모든 선 숨기기
-    hideAllLines();
-
-    if (isParentChild) {
-      // 부모-자식 관계인 경우 모든 방향의 간격 표시
-      showAllDirections(selectedRect, hoveredRect, selectedElement, hoveredElement);
-    } else {
-      // 일반적인 경우 적절한 방향의 간격 표시
-      showDiagonalDirections(selectedRect, hoveredRect, selectedElement, hoveredElement);
-    }
-  }, [selectedElement, hoveredElement]);
+  // 방향별 설정 구성
+  const lineConfigs: Record<Direction, LineConfig> = {
+    top: {
+      ref: topLineRef,
+      distanceRef: topDistanceRef,
+      cssProps: 'w-0',
+      isHorizontal: false,
+    },
+    right: {
+      ref: rightLineRef,
+      distanceRef: rightDistanceRef,
+      cssProps: 'h-0',
+      isHorizontal: true,
+    },
+    bottom: {
+      ref: bottomLineRef,
+      distanceRef: bottomDistanceRef,
+      cssProps: 'w-0',
+      isHorizontal: false,
+    },
+    left: {
+      ref: leftLineRef,
+      distanceRef: leftDistanceRef,
+      cssProps: 'h-0',
+      isHorizontal: true,
+    },
+  };
 
   // 부모-자식 관계 확인
-  const isParentChildRelationship = (element1: HTMLElement, element2: HTMLElement): boolean => {
-    // 클릭된 요소가 호버된 요소의 자식인지 확인
-    return element2.contains(element1) || element1.contains(element2);
+  const isParentChildRelationship = (selectedElement: HTMLElement, hoveredElement: HTMLElement): boolean => {
+    return hoveredElement.contains(selectedElement);
+  };
+
+  // 모든 선 숨기기
+  const hideAllLines = () => {
+    Object.values(lineConfigs).forEach(config => {
+      if (config.ref.current) {
+        config.ref.current.style.display = 'none';
+      }
+      if (config.distanceRef.current) {
+        config.distanceRef.current.style.display = 'none';
+      }
+    });
+  };
+
+  // 선 위치와 거리 표시 설정 (통합 함수)
+  const setupLine = (direction: Direction, startX: number, startY: number, measurement: number, endPoint: number) => {
+    const config = lineConfigs[direction];
+    const { ref, distanceRef, isHorizontal } = config;
+
+    if (!ref.current || !distanceRef.current || measurement <= 0) return;
+
+    if (isHorizontal) {
+      // 가로 선 (right, left)
+      const posX = direction === 'right' ? startX : endPoint;
+      ref.current.style.left = `${posX}px`;
+      ref.current.style.top = `${startY}px`;
+      ref.current.style.width = `${measurement}px`;
+      ref.current.style.height = '';
+
+      // 중앙 위치 계산
+      const middleX =
+        direction === 'right'
+          ? startX + measurement / 2 // 오른쪽 방향
+          : endPoint + measurement / 2; // 왼쪽 방향
+      distanceRef.current.style.left = `${middleX}px`;
+      distanceRef.current.style.top = `${startY}px`;
+    } else {
+      // 세로 선 (top, bottom)
+      const posY = direction === 'bottom' ? startY : endPoint;
+      ref.current.style.left = `${startX}px`;
+      ref.current.style.top = `${posY}px`;
+      ref.current.style.height = `${measurement}px`;
+      ref.current.style.width = '';
+
+      // 중앙 위치 계산
+      const middleY =
+        direction === 'bottom'
+          ? startY + measurement / 2 // 아래쪽 방향
+          : endPoint + measurement / 2; // 위쪽 방향
+      distanceRef.current.style.left = `${startX}px`;
+      distanceRef.current.style.top = `${middleY}px`;
+    }
+
+    ref.current.style.display = 'block';
+
+    // 거리 텍스트 설정
+    const distance = Math.round(measurement);
+    distanceRef.current.textContent = `${distance}px`;
+    distanceRef.current.style.transform = 'translate(-50%, -50%)';
+    distanceRef.current.style.display = 'block';
+  };
+
+  // 위쪽 간격 표시
+  const showTopLine = (
+    selectedRect: DOMRect,
+    hoveredRect: DOMRect,
+    isParentChild: boolean,
+    selectedElement: HTMLElement,
+    hoveredElement: HTMLElement,
+  ) => {
+    const isSelectedChildOfHovered = hoveredElement.contains(selectedElement);
+    let startX, startY, endY, height;
+
+    if (isParentChild) {
+      startX =
+        (isSelectedChildOfHovered
+          ? selectedRect.left + selectedRect.width / 2
+          : hoveredRect.left + hoveredRect.width / 2) + window.scrollX;
+      startY = selectedRect.top + window.scrollY;
+      endY = (isSelectedChildOfHovered ? hoveredRect.top : selectedRect.top) + window.scrollY;
+      height = Math.abs(startY - endY);
+    } else {
+      startX = selectedRect.left + selectedRect.width / 2 + window.scrollX;
+      startY = selectedRect.top + window.scrollY;
+      endY = hoveredRect.bottom + window.scrollY;
+      height = startY - endY;
+    }
+
+    setupLine('top', startX, startY, height, endY);
+  };
+
+  // 오른쪽 간격 표시
+  const showRightLine = (
+    selectedRect: DOMRect,
+    hoveredRect: DOMRect,
+    isParentChild: boolean,
+    selectedElement: HTMLElement,
+    hoveredElement: HTMLElement,
+  ) => {
+    const isSelectedChildOfHovered = hoveredElement.contains(selectedElement);
+    let startX, startY, endX, width;
+
+    if (isParentChild) {
+      startX = selectedRect.right + window.scrollX;
+      startY = selectedRect.top + selectedRect.height / 2 + window.scrollY;
+      endX = (isSelectedChildOfHovered ? hoveredRect.right : selectedRect.right) + window.scrollX;
+      width = Math.abs(endX - startX);
+    } else {
+      startX = selectedRect.right + window.scrollX;
+      startY = selectedRect.top + selectedRect.height / 2 + window.scrollY;
+      endX = hoveredRect.left + window.scrollX;
+      width = endX - startX;
+    }
+
+    setupLine('right', startX, startY, width, endX);
+  };
+
+  // 아래쪽 간격 표시
+  const showBottomLine = (
+    selectedRect: DOMRect,
+    hoveredRect: DOMRect,
+    isParentChild: boolean,
+    selectedElement: HTMLElement,
+    hoveredElement: HTMLElement,
+  ) => {
+    const isSelectedChildOfHovered = hoveredElement.contains(selectedElement);
+    let startX, startY, endY, height;
+
+    if (isParentChild) {
+      startX =
+        (isSelectedChildOfHovered
+          ? selectedRect.left + selectedRect.width / 2
+          : hoveredRect.left + hoveredRect.width / 2) + window.scrollX;
+      startY = selectedRect.bottom + window.scrollY;
+      endY = (isSelectedChildOfHovered ? hoveredRect.bottom : selectedRect.bottom) + window.scrollY;
+      height = Math.abs(endY - startY);
+    } else {
+      startX = selectedRect.left + selectedRect.width / 2 + window.scrollX;
+      startY = selectedRect.bottom + window.scrollY;
+      endY = hoveredRect.top + window.scrollY;
+      height = endY - startY;
+    }
+
+    setupLine('bottom', startX, startY, height, endY);
+  };
+
+  // 왼쪽 간격 표시
+  const showLeftLine = (
+    selectedRect: DOMRect,
+    hoveredRect: DOMRect,
+    isParentChild: boolean,
+    selectedElement: HTMLElement,
+    hoveredElement: HTMLElement,
+  ) => {
+    const isSelectedChildOfHovered = hoveredElement.contains(selectedElement);
+    let startX, startY, endX, width;
+
+    if (isParentChild) {
+      startX = selectedRect.left + window.scrollX;
+      startY = selectedRect.top + selectedRect.height / 2 + window.scrollY;
+      endX = (isSelectedChildOfHovered ? hoveredRect.left : selectedRect.left) + window.scrollX;
+      width = Math.abs(startX - endX);
+    } else {
+      startX = selectedRect.left + window.scrollX;
+      startY = selectedRect.top + selectedRect.height / 2 + window.scrollY;
+      endX = hoveredRect.right + window.scrollX;
+      width = startX - endX;
+    }
+
+    setupLine('left', startX, startY, width, endX);
   };
 
   // 모든 방향의 간격 표시 (부모-자식 관계인 경우)
@@ -116,339 +288,69 @@ export default function SpacingGuideLine() {
     }
   };
 
-  // 모든 선 숨기기
-  const hideAllLines = () => {
-    [topLineRef, rightLineRef, bottomLineRef, leftLineRef].forEach(ref => {
-      if (ref.current) {
-        ref.current.style.display = 'none';
-      }
-    });
+  useEffect(() => {
+    if (!selectedElement || !hoveredElement) {
+      hideAllLines();
+      return;
+    }
 
-    // 모든 거리 표시 요소도 숨기기
-    [topDistanceRef, rightDistanceRef, bottomDistanceRef, leftDistanceRef].forEach(ref => {
-      if (ref.current) {
-        ref.current.style.display = 'none';
-      }
-    });
-  };
+    if (hoveredElement.id === ELEMENT_ID.ROOT) {
+      hideAllLines();
+      return;
+    }
 
-  // 위쪽 간격 표시
-  const showTopLine = (
-    selectedRect: DOMRect,
-    hoveredRect: DOMRect,
-    isParentChild: boolean,
-    selectedElement: HTMLElement,
-    hoveredElement: HTMLElement,
-  ) => {
-    if (!topLineRef.current || !topDistanceRef.current) return;
+    if (selectedElement === hoveredElement) {
+      hideAllLines();
+      return;
+    }
 
-    let startX, startY, endY, height;
+    const selectedRect = selectedElement.getBoundingClientRect();
+    const hoveredRect = hoveredElement.getBoundingClientRect();
+
+    // 요소 간의 관계 확인
+    const isParentChild = isParentChildRelationship(selectedElement, hoveredElement);
+
+    // 모든 선 숨기기
+    hideAllLines();
 
     if (isParentChild) {
-      // 부모-자식 관계의 경우, 자식 요소 상단에서 부모 요소 상단까지의 간격
-      const isSelectedChildOfHovered = hoveredElement.contains(selectedElement);
-
-      if (isSelectedChildOfHovered) {
-        // 호버된 요소가 부모인 경우
-        startX = selectedRect.left + selectedRect.width / 2 + window.scrollX;
-        startY = selectedRect.top + window.scrollY;
-        endY = hoveredRect.top + window.scrollY;
-      } else {
-        // 선택된 요소가 부모인 경우
-        startX = hoveredRect.left + hoveredRect.width / 2 + window.scrollX;
-        startY = hoveredRect.top + window.scrollY;
-        endY = selectedRect.top + window.scrollY;
-      }
-      height = Math.abs(startY - endY);
+      // 부모-자식 관계인 경우 모든 방향의 간격 표시
+      showAllDirections(selectedRect, hoveredRect, selectedElement, hoveredElement);
     } else {
-      // 일반적인 경우 - 호버된 요소가 위쪽에 있을 때
-      startX = selectedRect.left + selectedRect.width / 2 + window.scrollX;
-      startY = selectedRect.top + window.scrollY;
-
-      // 호버된 요소가 위쪽에 있으므로 하단 경계점을 사용
-      endY = hoveredRect.bottom + window.scrollY;
-
-      // 거리 계산 (선택된 요소 상단에서 호버된 요소 하단까지)
-      height = startY - endY;
+      // 일반적인 경우 적절한 방향의 간격 표시
+      showDiagonalDirections(selectedRect, hoveredRect, selectedElement, hoveredElement);
     }
+  }, [selectedElement, hoveredElement]);
 
-    if (height <= 0) return; // 유효하지 않은 높이는 무시
-
-    // 위쪽 선 위치 설정 (항상 위쪽에서 시작)
-    topLineRef.current.style.left = `${startX}px`;
-    topLineRef.current.style.top = `${endY}px`; // 위쪽에서 시작
-    topLineRef.current.style.height = `${height}px`;
-    topLineRef.current.style.display = 'block';
-
-    // 거리 표시 (정중앙에 배치)
-    const distance = Math.round(height);
-    const middleY = endY + height / 2;
-
-    // 텍스트 중앙 정렬을 위한 설정
-    if (topDistanceRef.current) {
-      topDistanceRef.current.textContent = `${distance}px`;
-
-      // DIV를 정중앙에 배치
-      topDistanceRef.current.style.left = `${startX}px`;
-      topDistanceRef.current.style.top = `${middleY}px`;
-      topDistanceRef.current.style.transform = 'translate(-50%, -50%)'; // 중앙 정렬
-      topDistanceRef.current.style.display = 'block';
-    }
-  };
-
-  // 오른쪽 간격 표시
-  const showRightLine = (
-    selectedRect: DOMRect,
-    hoveredRect: DOMRect,
-    isParentChild: boolean,
-    selectedElement: HTMLElement,
-    hoveredElement: HTMLElement,
-  ) => {
-    if (!rightLineRef.current || !rightDistanceRef.current) return;
-
-    let startX, startY, endX, width;
-
-    if (isParentChild) {
-      // 부모-자식 관계의 경우, 자식 요소 오른쪽에서 부모 요소 오른쪽까지의 간격
-      const isSelectedChildOfHovered = hoveredElement.contains(selectedElement);
-
-      if (isSelectedChildOfHovered) {
-        // 호버된 요소가 부모인 경우
-        startX = selectedRect.right + window.scrollX;
-        startY = selectedRect.top + selectedRect.height / 2 + window.scrollY;
-        endX = hoveredRect.right + window.scrollX;
-      } else {
-        // 선택된 요소가 부모인 경우
-        startX = hoveredRect.right + window.scrollX;
-        startY = hoveredRect.top + hoveredRect.height / 2 + window.scrollY;
-        endX = selectedRect.right + window.scrollX;
-      }
-      width = Math.abs(endX - startX);
-    } else {
-      // 일반적인 경우 - 호버된 요소가 오른쪽에 있을 때
-      startX = selectedRect.right + window.scrollX;
-      startY = selectedRect.top + selectedRect.height / 2 + window.scrollY;
-
-      // 호버된 요소가 오른쪽에 있으므로 왼쪽 경계점을 사용
-      endX = hoveredRect.left + window.scrollX;
-
-      // 거리 계산 (선택된 요소 오른쪽에서 호버된 요소 왼쪽까지)
-      width = endX - startX;
-    }
-
-    if (width <= 0) return; // 유효하지 않은 너비는 무시
-
-    // 오른쪽 선 위치 설정 (항상 왼쪽에서 시작)
-    rightLineRef.current.style.left = `${startX}px`;
-    rightLineRef.current.style.top = `${startY}px`;
-    rightLineRef.current.style.width = `${width}px`;
-    rightLineRef.current.style.display = 'block';
-
-    // 거리 표시 (정중앙에 배치)
-    const distance = Math.round(width);
-    const middleX = startX + width / 2;
-
-    // 텍스트 중앙 정렬을 위한 설정
-    if (rightDistanceRef.current) {
-      rightDistanceRef.current.textContent = `${distance}px`;
-
-      // DIV를 정중앙에 배치
-      rightDistanceRef.current.style.left = `${middleX}px`;
-      rightDistanceRef.current.style.top = `${startY}px`;
-      rightDistanceRef.current.style.transform = 'translate(-50%, -50%)'; // 중앙 정렬
-      rightDistanceRef.current.style.display = 'block';
-    }
-  };
-
-  // 아래쪽 간격 표시
-  const showBottomLine = (
-    selectedRect: DOMRect,
-    hoveredRect: DOMRect,
-    isParentChild: boolean,
-    selectedElement: HTMLElement,
-    hoveredElement: HTMLElement,
-  ) => {
-    if (!bottomLineRef.current || !bottomDistanceRef.current) return;
-
-    let startX, startY, endY, height;
-
-    if (isParentChild) {
-      // 부모-자식 관계의 경우, 자식 요소 하단에서 부모 요소 하단까지의 간격
-      const isSelectedChildOfHovered = hoveredElement.contains(selectedElement);
-
-      if (isSelectedChildOfHovered) {
-        // 호버된 요소가 부모인 경우
-        startX = selectedRect.left + selectedRect.width / 2 + window.scrollX;
-        startY = selectedRect.bottom + window.scrollY;
-        endY = hoveredRect.bottom + window.scrollY;
-      } else {
-        // 선택된 요소가 부모인 경우
-        startX = hoveredRect.left + hoveredRect.width / 2 + window.scrollX;
-        startY = hoveredRect.bottom + window.scrollY;
-        endY = selectedRect.bottom + window.scrollY;
-      }
-      height = Math.abs(endY - startY);
-    } else {
-      // 일반적인 경우 - 호버된 요소가 아래쪽에 있을 때
-      startX = selectedRect.left + selectedRect.width / 2 + window.scrollX;
-      startY = selectedRect.bottom + window.scrollY;
-
-      // 호버된 요소가 아래쪽에 있으므로 상단 경계점을 사용
-      endY = hoveredRect.top + window.scrollY;
-
-      // 거리 계산 (선택된 요소 하단에서 호버된 요소 상단까지)
-      height = endY - startY;
-    }
-
-    if (height <= 0) return; // 유효하지 않은 높이는 무시
-
-    // 아래쪽 선 위치 설정 (항상 위쪽에서 시작)
-    bottomLineRef.current.style.left = `${startX}px`;
-    bottomLineRef.current.style.top = `${startY}px`; // 위쪽에서 시작
-    bottomLineRef.current.style.height = `${height}px`;
-    bottomLineRef.current.style.display = 'block';
-
-    // 거리 표시 (정중앙에 배치)
-    const distance = Math.round(height);
-    const middleY = startY + height / 2;
-
-    // 텍스트 중앙 정렬을 위한 설정
-    if (bottomDistanceRef.current) {
-      bottomDistanceRef.current.textContent = `${distance}px`;
-
-      // DIV를 정중앙에 배치
-      bottomDistanceRef.current.style.left = `${startX}px`;
-      bottomDistanceRef.current.style.top = `${middleY}px`;
-      bottomDistanceRef.current.style.transform = 'translate(-50%, -50%)'; // 중앙 정렬
-      bottomDistanceRef.current.style.display = 'block';
-    }
-  };
-
-  // 왼쪽 간격 표시
-  const showLeftLine = (
-    selectedRect: DOMRect,
-    hoveredRect: DOMRect,
-    isParentChild: boolean,
-    selectedElement: HTMLElement,
-    hoveredElement: HTMLElement,
-  ) => {
-    if (!leftLineRef.current || !leftDistanceRef.current) return;
-
-    let startX, startY, endX, width;
-
-    if (isParentChild) {
-      // 부모-자식 관계의 경우, 자식 요소 왼쪽에서 부모 요소 왼쪽까지의 간격
-      const isSelectedChildOfHovered = hoveredElement.contains(selectedElement);
-
-      if (isSelectedChildOfHovered) {
-        // 호버된 요소가 부모인 경우
-        startX = selectedRect.left + window.scrollX;
-        startY = selectedRect.top + selectedRect.height / 2 + window.scrollY;
-        endX = hoveredRect.left + window.scrollX;
-      } else {
-        // 선택된 요소가 부모인 경우
-        startX = hoveredRect.left + window.scrollX;
-        startY = hoveredRect.top + hoveredRect.height / 2 + window.scrollY;
-        endX = selectedRect.left + window.scrollX;
-      }
-      width = Math.abs(startX - endX);
-    } else {
-      // 일반적인 경우 - 호버된 요소가 왼쪽에 있을 때
-      startX = selectedRect.left + window.scrollX;
-      startY = selectedRect.top + selectedRect.height / 2 + window.scrollY;
-
-      // 호버된 요소가 왼쪽에 있으므로 오른쪽 경계점을 사용
-      endX = hoveredRect.right + window.scrollX;
-
-      // 거리 계산 (선택된 요소 왼쪽에서 호버된 요소 오른쪽까지)
-      width = startX - endX;
-    }
-
-    if (width <= 0) return; // 유효하지 않은 너비는 무시
-
-    // 왼쪽 선 위치 설정 (항상 오른쪽에서 왼쪽으로)
-    leftLineRef.current.style.left = `${endX}px`; // 왼쪽에서 시작
-    leftLineRef.current.style.top = `${startY}px`;
-    leftLineRef.current.style.width = `${width}px`;
-    leftLineRef.current.style.display = 'block';
-
-    // 거리 표시 (정중앙에 배치)
-    const distance = Math.round(width);
-    const middleX = endX + width / 2;
-
-    // 텍스트 중앙 정렬을 위한 설정
-    if (leftDistanceRef.current) {
-      leftDistanceRef.current.textContent = `${distance}px`;
-
-      // DIV를 정중앙에 배치
-      leftDistanceRef.current.style.left = `${middleX}px`;
-      leftDistanceRef.current.style.top = `${startY}px`;
-      leftDistanceRef.current.style.transform = 'translate(-50%, -50%)'; // 중앙 정렬
-      leftDistanceRef.current.style.display = 'block';
-    }
-  };
-
+  // 스타일링 클래스 정의
   const lineClassName = 'absolute pointer-events-none border-[1px] border-dashed border-gray-400 hidden';
   const distanceClassName =
-    'absolute pointer-events-none z-[99998] bg-gray-700 text-white px-1.5 py-0.5 rounded text-xs font-mono hidden text-[10px]';
+    'absolute pointer-events-none z-[99998] bg-main-900 text-white px-1.5 py-0.5 rounded text-xs font-mono hidden text-[10px]';
 
   return (
     <>
       {/* 각 방향의 점선 */}
-      <div
-        ref={topLineRef}
-        className={cn(lineClassName, 'w-0', Z_INDEX.SPACING_GUIDE_LINE)}
-        id={`${ELEMENT_ID.SELECTED_HIGHLIGHT_OVERLAY}-top-line`}
-        style={{
-          zIndex: Z_INDEX.SPACING_GUIDE_LINE,
-        }}
-      />
-      <div
-        ref={rightLineRef}
-        className={cn(lineClassName, 'h-0', Z_INDEX.SPACING_GUIDE_LINE)}
-        id={`${ELEMENT_ID.SELECTED_HIGHLIGHT_OVERLAY}-right-line`}
-        style={{
-          zIndex: Z_INDEX.SPACING_GUIDE_LINE,
-        }}
-      />
-      <div
-        ref={bottomLineRef}
-        className={cn(lineClassName, 'w-0', Z_INDEX.SPACING_GUIDE_LINE)}
-        id={`${ELEMENT_ID.SELECTED_HIGHLIGHT_OVERLAY}-bottom-line`}
-        style={{
-          zIndex: Z_INDEX.SPACING_GUIDE_LINE,
-        }}
-      />
-      <div
-        ref={leftLineRef}
-        className={cn(lineClassName, 'h-0', Z_INDEX.SPACING_GUIDE_LINE)}
-        id={`${ELEMENT_ID.SELECTED_HIGHLIGHT_OVERLAY}-left-line`}
-        style={{
-          zIndex: Z_INDEX.SPACING_GUIDE_LINE,
-        }}
-      />
+      {Object.entries(lineConfigs).map(([direction, config]) => (
+        <div
+          key={`${direction}-line`}
+          ref={config.ref}
+          className={cn(lineClassName, config.cssProps, Z_INDEX.SPACING_GUIDE_LINE)}
+          id={`${ELEMENT_ID.SELECTED_HIGHLIGHT_OVERLAY}-${direction}-line`}
+          style={{
+            zIndex: Z_INDEX.SPACING_GUIDE_LINE,
+          }}
+        />
+      ))}
 
       {/* 각 방향의 거리 표시 */}
-      <div
-        ref={topDistanceRef}
-        className={cn(distanceClassName, Z_INDEX.SPACING_GUIDE_LINE)}
-        id={`${ELEMENT_ID.SELECTED_HIGHLIGHT_OVERLAY}-top-distance`}
-      />
-      <div
-        ref={rightDistanceRef}
-        className={cn(distanceClassName, Z_INDEX.SPACING_GUIDE_LINE)}
-        id={`${ELEMENT_ID.SELECTED_HIGHLIGHT_OVERLAY}-right-distance`}
-      />
-      <div
-        ref={bottomDistanceRef}
-        className={cn(distanceClassName, Z_INDEX.SPACING_GUIDE_LINE)}
-        id={`${ELEMENT_ID.SELECTED_HIGHLIGHT_OVERLAY}-bottom-distance`}
-      />
-      <div
-        ref={leftDistanceRef}
-        className={cn(distanceClassName, Z_INDEX.SPACING_GUIDE_LINE)}
-        id={`${ELEMENT_ID.SELECTED_HIGHLIGHT_OVERLAY}-left-distance`}
-      />
+      {Object.entries(lineConfigs).map(([direction, config]) => (
+        <div
+          key={`${direction}-distance`}
+          ref={config.distanceRef}
+          className={cn(distanceClassName, Z_INDEX.SPACING_GUIDE_LINE)}
+          id={`${ELEMENT_ID.SELECTED_HIGHLIGHT_OVERLAY}-${direction}-distance`}
+        />
+      ))}
     </>
   );
 }
