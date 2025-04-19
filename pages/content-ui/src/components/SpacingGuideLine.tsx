@@ -53,8 +53,8 @@ export default function SpacingGuideLine() {
       // 부모-자식 관계인 경우 모든 방향의 간격 표시
       showAllDirections(selectedRect, hoveredRect, selectedElement, hoveredElement);
     } else {
-      // 일반적인 경우 가장 가까운 방향의 간격만 표시
-      showNearestDirection(selectedRect, hoveredRect, selectedElement, hoveredElement);
+      // 일반적인 경우 적절한 방향의 간격 표시
+      showDiagonalDirections(selectedRect, hoveredRect, selectedElement, hoveredElement);
     }
   }, [selectedElement, hoveredElement]);
 
@@ -78,8 +78,8 @@ export default function SpacingGuideLine() {
     showLeftLine(selectedRect, hoveredRect, true, selectedElement, hoveredElement);
   };
 
-  // 가장 가까운 방향의 간격만 표시 (일반적인 경우)
-  const showNearestDirection = (
+  // 대각선 및 기타 방향의 간격 표시 (일반적인 경우)
+  const showDiagonalDirections = (
     selectedRect: DOMRect,
     hoveredRect: DOMRect,
     selectedElement: HTMLElement,
@@ -97,30 +97,22 @@ export default function SpacingGuideLine() {
       y: hoveredRect.top + hoveredRect.height / 2,
     };
 
-    // 방향 결정 (상, 우, 하, 좌)
-    const diffX = hoveredCenter.x - selectedCenter.x;
-    const diffY = hoveredCenter.y - selectedCenter.y;
-    const absX = Math.abs(diffX);
-    const absY = Math.abs(diffY);
+    // 위쪽 또는 아래쪽 방향 결정
+    if (hoveredCenter.y < selectedCenter.y) {
+      // 호버된 요소가 위쪽에 있는 경우
+      showTopLine(selectedRect, hoveredRect, false, selectedElement, hoveredElement);
+    } else if (hoveredCenter.y > selectedCenter.y) {
+      // 호버된 요소가 아래쪽에 있는 경우
+      showBottomLine(selectedRect, hoveredRect, false, selectedElement, hoveredElement);
+    }
 
-    if (absX > absY) {
-      // 좌우 방향이 우세
-      if (diffX > 0) {
-        // 오른쪽 방향
-        showRightLine(selectedRect, hoveredRect, false, selectedElement, hoveredElement);
-      } else {
-        // 왼쪽 방향
-        showLeftLine(selectedRect, hoveredRect, false, selectedElement, hoveredElement);
-      }
-    } else {
-      // 상하 방향이 우세
-      if (diffY > 0) {
-        // 아래쪽 방향
-        showBottomLine(selectedRect, hoveredRect, false, selectedElement, hoveredElement);
-      } else {
-        // 위쪽 방향
-        showTopLine(selectedRect, hoveredRect, false, selectedElement, hoveredElement);
-      }
+    // 왼쪽 또는 오른쪽 방향 결정
+    if (hoveredCenter.x < selectedCenter.x) {
+      // 호버된 요소가 왼쪽에 있는 경우
+      showLeftLine(selectedRect, hoveredRect, false, selectedElement, hoveredElement);
+    } else if (hoveredCenter.x > selectedCenter.x) {
+      // 호버된 요소가 오른쪽에 있는 경우
+      showRightLine(selectedRect, hoveredRect, false, selectedElement, hoveredElement);
     }
   };
 
@@ -169,25 +161,28 @@ export default function SpacingGuideLine() {
       }
       height = Math.abs(startY - endY);
     } else {
-      // 일반적인 경우
+      // 일반적인 경우 - 호버된 요소가 위쪽에 있을 때
       startX = selectedRect.left + selectedRect.width / 2 + window.scrollX;
       startY = selectedRect.top + window.scrollY;
+
+      // 호버된 요소가 위쪽에 있으므로 하단 경계점을 사용
       endY = hoveredRect.bottom + window.scrollY;
+
+      // 거리 계산 (선택된 요소 상단에서 호버된 요소 하단까지)
       height = startY - endY;
     }
 
     if (height <= 0) return; // 유효하지 않은 높이는 무시
 
-    // 시작점과 끝점 중 위쪽인 지점에서 선이 시작되도록 설정
-    const topY = Math.min(startY, endY);
+    // 위쪽 선 위치 설정 (항상 위쪽에서 시작)
     topLineRef.current.style.left = `${startX}px`;
-    topLineRef.current.style.top = `${topY}px`;
+    topLineRef.current.style.top = `${endY}px`; // 위쪽에서 시작
     topLineRef.current.style.height = `${height}px`;
     topLineRef.current.style.display = 'block';
 
     // 거리 표시 (중간 지점에 배치)
     const distance = Math.round(height);
-    const middleY = topY + height / 2;
+    const middleY = endY + height / 2;
 
     topDistanceRef.current.textContent = `${distance}px`;
     topDistanceRef.current.style.left = `${startX + 10}px`; // 선에서 약간 오른쪽으로 띄움
@@ -224,25 +219,28 @@ export default function SpacingGuideLine() {
       }
       width = Math.abs(endX - startX);
     } else {
-      // 일반적인 경우
+      // 일반적인 경우 - 호버된 요소가 오른쪽에 있을 때
       startX = selectedRect.right + window.scrollX;
       startY = selectedRect.top + selectedRect.height / 2 + window.scrollY;
+
+      // 호버된 요소가 오른쪽에 있으므로 왼쪽 경계점을 사용
       endX = hoveredRect.left + window.scrollX;
+
+      // 거리 계산 (선택된 요소 오른쪽에서 호버된 요소 왼쪽까지)
       width = endX - startX;
     }
 
     if (width <= 0) return; // 유효하지 않은 너비는 무시
 
-    // 시작점과 끝점 중 왼쪽인 지점에서 선이 시작되도록 설정
-    const leftX = Math.min(startX, endX);
-    rightLineRef.current.style.left = `${leftX}px`;
+    // 오른쪽 선 위치 설정 (항상 왼쪽에서 시작)
+    rightLineRef.current.style.left = `${startX}px`;
     rightLineRef.current.style.top = `${startY}px`;
     rightLineRef.current.style.width = `${width}px`;
     rightLineRef.current.style.display = 'block';
 
     // 거리 표시 (중간 지점에 배치)
     const distance = Math.round(width);
-    const middleX = leftX + width / 2;
+    const middleX = startX + width / 2;
 
     rightDistanceRef.current.textContent = `${distance}px`;
     rightDistanceRef.current.style.left = `${middleX - 20}px`; // 중앙에 배치하되 약간 왼쪽으로 조정
@@ -279,25 +277,28 @@ export default function SpacingGuideLine() {
       }
       height = Math.abs(endY - startY);
     } else {
-      // 일반적인 경우
+      // 일반적인 경우 - 호버된 요소가 아래쪽에 있을 때
       startX = selectedRect.left + selectedRect.width / 2 + window.scrollX;
       startY = selectedRect.bottom + window.scrollY;
+
+      // 호버된 요소가 아래쪽에 있으므로 상단 경계점을 사용
       endY = hoveredRect.top + window.scrollY;
+
+      // 거리 계산 (선택된 요소 하단에서 호버된 요소 상단까지)
       height = endY - startY;
     }
 
     if (height <= 0) return; // 유효하지 않은 높이는 무시
 
-    // 시작점과 끝점 중 위쪽인 지점에서 선이 시작되도록 설정
-    const topY = Math.min(startY, endY);
+    // 아래쪽 선 위치 설정 (항상 위쪽에서 시작)
     bottomLineRef.current.style.left = `${startX}px`;
-    bottomLineRef.current.style.top = `${topY}px`;
+    bottomLineRef.current.style.top = `${startY}px`; // 위쪽에서 시작
     bottomLineRef.current.style.height = `${height}px`;
     bottomLineRef.current.style.display = 'block';
 
     // 거리 표시 (중간 지점에 배치)
     const distance = Math.round(height);
-    const middleY = topY + height / 2;
+    const middleY = startY + height / 2;
 
     bottomDistanceRef.current.textContent = `${distance}px`;
     bottomDistanceRef.current.style.left = `${startX + 10}px`; // 선에서 약간 오른쪽으로 띄움
@@ -334,25 +335,28 @@ export default function SpacingGuideLine() {
       }
       width = Math.abs(startX - endX);
     } else {
-      // 일반적인 경우
+      // 일반적인 경우 - 호버된 요소가 왼쪽에 있을 때
       startX = selectedRect.left + window.scrollX;
       startY = selectedRect.top + selectedRect.height / 2 + window.scrollY;
+
+      // 호버된 요소가 왼쪽에 있으므로 오른쪽 경계점을 사용
       endX = hoveredRect.right + window.scrollX;
+
+      // 거리 계산 (선택된 요소 왼쪽에서 호버된 요소 오른쪽까지)
       width = startX - endX;
     }
 
     if (width <= 0) return; // 유효하지 않은 너비는 무시
 
-    // 시작점과 끝점 중 왼쪽인 지점에서 선이 시작되도록 설정
-    const leftX = Math.min(startX, endX);
-    leftLineRef.current.style.left = `${leftX}px`;
+    // 왼쪽 선 위치 설정 (항상 오른쪽에서 왼쪽으로)
+    leftLineRef.current.style.left = `${endX}px`; // 왼쪽에서 시작
     leftLineRef.current.style.top = `${startY}px`;
     leftLineRef.current.style.width = `${width}px`;
     leftLineRef.current.style.display = 'block';
 
     // 거리 표시 (중간 지점에 배치)
     const distance = Math.round(width);
-    const middleX = leftX + width / 2;
+    const middleX = endX + width / 2;
 
     leftDistanceRef.current.textContent = `${distance}px`;
     leftDistanceRef.current.style.left = `${middleX - 20}px`; // 중앙에 배치하되 약간 왼쪽으로 조정
@@ -363,6 +367,8 @@ export default function SpacingGuideLine() {
   const lineClassName = 'absolute pointer-events-none z-[99997] border-2 border-dashed border-sub-500 hidden';
   const distanceClassName =
     'absolute pointer-events-none z-[99998] bg-sub-500 text-white px-2 py-0.5 rounded text-xs font-mono hidden';
+
+  console.log('here');
 
   return (
     <>

@@ -3,7 +3,7 @@ import {
   ElementInfoOverlay,
   HoverHighlightOverlay,
   SelectedHighlightOverlay,
-  ElementConnectionLine,
+  SpacingGuideLine,
 } from './components';
 import { useElementScanEvents } from './hook';
 
@@ -15,7 +15,7 @@ export default function App() {
       <ToggleButton />
       <HoverHighlightOverlay />
       <SelectedHighlightOverlay />
-      <ElementConnectionLine />
+      <SpacingGuideLine />
       <ElementInfoOverlay />
     </>
   );
