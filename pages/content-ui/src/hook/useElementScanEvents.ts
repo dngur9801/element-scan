@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
-import { ELEMENT_ID, useElementScanStore } from '@extension/shared';
+import { useElementScanStore } from '@extension/shared';
+import { ELEMENT_ID } from '@src/constants';
 import { extractElementInfo } from '@src/utils';
 
 export const useElementScanEvents = () => {
