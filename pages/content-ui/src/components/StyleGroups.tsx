@@ -93,7 +93,7 @@ export default function StyleGroups({ groups }: Props) {
                       <>
                         <div className="flex items-center gap-1">
                           <div
-                            className="size-3 rounded-[3px] outline-[1px] outline-solid outline-gray-300 shadow-sm"
+                            className="size-3 rounded-[3px] border border-solid border-gray-500 shadow-xl"
                             style={{ backgroundColor: value }}
                           />
                           <span>{value}</span>

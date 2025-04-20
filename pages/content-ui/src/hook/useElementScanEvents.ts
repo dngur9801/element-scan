@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useElementScanStore } from '@extension/shared';
+import { useElementScanStore, type ElementType } from '@extension/shared';
 import { ELEMENT_ID } from '@src/constants';
 import { extractElementInfo } from '@src/utils';
 
@@ -20,8 +20,8 @@ export const useElementScanEvents = () => {
     if (!elementScanActive) return;
 
     const handleMouseOver = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (!target || !(target instanceof HTMLElement)) return;
+      const target = e.target as ElementType;
+      if (!target || !(target instanceof Element)) return;
       if (target === hoveredElement) return;
 
       setHoveredElement(target);
@@ -33,22 +33,22 @@ export const useElementScanEvents = () => {
     };
 
     const handleMouseOut = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
+      const target = e.target;
       if (isPinned || target !== hoveredElement) return;
 
       setHoveredElement(null);
     };
 
     const handleClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
+      const target = e.target as ElementType;
 
-      if (target.id !== ELEMENT_ID.TOGGLE_BTN && target.id !== ELEMENT_ID.ROOT) {
+      if (target instanceof Element && target.id !== ELEMENT_ID.TOGGLE_BTN && target.id !== ELEMENT_ID.ROOT) {
         // 대상 요소 클릭시 이벤트 중단
         e.preventDefault();
         e.stopPropagation();
       }
 
-      if (target.id === ELEMENT_ID.ROOT) {
+      if (target instanceof Element && target.id === ELEMENT_ID.ROOT) {
         return;
       }
 

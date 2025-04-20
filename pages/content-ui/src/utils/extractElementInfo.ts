@@ -1,4 +1,4 @@
-import { type ElementInfo, type StyleGroup } from '@extension/shared';
+import { type ElementType, type ElementInfo, type StyleGroup } from '@extension/shared';
 import { colorManager } from './colorManager';
 
 // 제외할 스타일 속성 패턴 정의
@@ -18,7 +18,7 @@ const excludeValues: string[] = [
   'rgba(0, 0, 0, 0)',
 ];
 
-function getUserDefinedStyles(element: HTMLElement): Record<string, string> {
+function getUserDefinedStyles(element: ElementType): Record<string, string> {
   const definedStyles: Record<string, string> = {};
 
   // window.getComputedStyle을 사용하여 계산된 스타일 가져오기
@@ -155,16 +155,18 @@ function mergeBoxModelProperties(
   return newStyles;
 }
 
-export function extractElementInfo(element: HTMLElement): ElementInfo | null {
+export function extractElementInfo(element: ElementType): ElementInfo | null {
   if (!element) return null;
 
   const userDefinedStyles = getUserDefinedStyles(element);
 
+  const rect = element.getBoundingClientRect();
+
   const elementInfo: ElementInfo = {
     tagName: element.tagName.toLowerCase(),
-    className: element.className.split(' ')[0],
-    width: element.offsetWidth,
-    height: element.offsetHeight,
+    className: element instanceof SVGElement ? '' : '.' + element.className.split(' ')[0],
+    width: rect.width,
+    height: rect.height,
     styleGroups: categorizeStyles(userDefinedStyles),
   };
 

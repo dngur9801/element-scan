@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { useElementScanStore } from '@extension/shared';
+import { type ElementType, useElementScanStore } from '@extension/shared';
 import { useShallow } from 'zustand/shallow';
 import { ELEMENT_ID, Z_INDEX } from '@src/constants';
 import { cn } from '@extension/ui';
@@ -62,7 +62,7 @@ export default function SpacingGuideLine() {
   };
 
   // 부모-자식 관계 확인
-  const isParentChildRelationship = (selectedElement: HTMLElement, hoveredElement: HTMLElement): boolean => {
+  const isParentChildRelationship = (selectedElement: ElementType, hoveredElement: ElementType): boolean => {
     return hoveredElement.contains(selectedElement);
   };
 
@@ -131,8 +131,8 @@ export default function SpacingGuideLine() {
     selectedRect: DOMRect,
     hoveredRect: DOMRect,
     isParentChild: boolean,
-    selectedElement: HTMLElement,
-    hoveredElement: HTMLElement,
+    selectedElement: ElementType,
+    hoveredElement: ElementType,
   ) => {
     const isSelectedChildOfHovered = hoveredElement.contains(selectedElement);
     let startX, startY, endY, height;
@@ -160,8 +160,8 @@ export default function SpacingGuideLine() {
     selectedRect: DOMRect,
     hoveredRect: DOMRect,
     isParentChild: boolean,
-    selectedElement: HTMLElement,
-    hoveredElement: HTMLElement,
+    selectedElement: ElementType,
+    hoveredElement: ElementType,
   ) => {
     const isSelectedChildOfHovered = hoveredElement.contains(selectedElement);
     let startX, startY, endX, width;
@@ -186,8 +186,8 @@ export default function SpacingGuideLine() {
     selectedRect: DOMRect,
     hoveredRect: DOMRect,
     isParentChild: boolean,
-    selectedElement: HTMLElement,
-    hoveredElement: HTMLElement,
+    selectedElement: ElementType,
+    hoveredElement: ElementType,
   ) => {
     const isSelectedChildOfHovered = hoveredElement.contains(selectedElement);
     let startX, startY, endY, height;
@@ -215,8 +215,8 @@ export default function SpacingGuideLine() {
     selectedRect: DOMRect,
     hoveredRect: DOMRect,
     isParentChild: boolean,
-    selectedElement: HTMLElement,
-    hoveredElement: HTMLElement,
+    selectedElement: ElementType,
+    hoveredElement: ElementType,
   ) => {
     const isSelectedChildOfHovered = hoveredElement.contains(selectedElement);
     let startX, startY, endX, width;
@@ -240,8 +240,8 @@ export default function SpacingGuideLine() {
   const showAllDirections = (
     selectedRect: DOMRect,
     hoveredRect: DOMRect,
-    selectedElement: HTMLElement,
-    hoveredElement: HTMLElement,
+    selectedElement: ElementType,
+    hoveredElement: ElementType,
   ) => {
     // 상하좌우 모든 간격 표시
     showTopLine(selectedRect, hoveredRect, true, selectedElement, hoveredElement);
@@ -254,8 +254,8 @@ export default function SpacingGuideLine() {
   const showDiagonalDirections = (
     selectedRect: DOMRect,
     hoveredRect: DOMRect,
-    selectedElement: HTMLElement,
-    hoveredElement: HTMLElement,
+    selectedElement: ElementType,
+    hoveredElement: ElementType,
   ) => {
     // 선택된 요소의 중심점
     const selectedCenter = {

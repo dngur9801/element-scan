@@ -119,7 +119,8 @@ export default function ElementInfoOverlay() {
             <div className="p-3 pb-2">
               <div className="flex justify-between items-center">
                 <p className="font-mono text-sm text-main-900 font-bold">
-                  {elementInfo.tagName}.{elementInfo.className}
+                  {elementInfo.tagName}
+                  {elementInfo.className}
                 </p>
                 {/* 드래그 핸들러 추가 */}
                 <div className="drag-handle cursor-move p-1">

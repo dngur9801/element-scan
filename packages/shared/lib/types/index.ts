@@ -1,3 +1,5 @@
+export type ElementType = HTMLElement | SVGElement;
+
 export type StyleGroupName = 'Layout' | 'Typography' | 'Appearance';
 
 export interface StyleGroup {

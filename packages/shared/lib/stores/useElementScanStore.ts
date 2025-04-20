@@ -1,18 +1,18 @@
 import { create } from 'zustand';
-import { type ElementInfo } from '../types/index.js';
+import { type ElementInfo, type ElementType } from '../types/index.js';
 
 interface useElementScanStore {
   elementScanActive: boolean;
   isPinned: boolean;
-  hoveredElement: HTMLElement | null;
-  selectedElement: HTMLElement | null;
+  hoveredElement: ElementType | null;
+  selectedElement: ElementType | null;
   elementInfo: ElementInfo | null;
 
   reset: () => void;
   toggleScan: (value?: boolean) => boolean;
   togglePin: (value?: boolean) => boolean;
-  setHoveredElement: (element: HTMLElement | null) => void;
-  setSelectedElement: (element: HTMLElement | null) => void;
+  setHoveredElement: (element: ElementType | null) => void;
+  setSelectedElement: (element: ElementType | null) => void;
   setElementInfo: (elementInfo: ElementInfo | null) => void;
   updateElementStyle: (groupName: string, property: string, value: string) => void;
 }
@@ -60,9 +60,9 @@ export const useElementScanStore = create<useElementScanStore>((set, get) => ({
     return isPinned;
   },
 
-  setHoveredElement: (element: HTMLElement | null) => set({ hoveredElement: element }),
+  setHoveredElement: (element: ElementType | null) => set({ hoveredElement: element }),
 
-  setSelectedElement: (element: HTMLElement | null) => set({ selectedElement: element }),
+  setSelectedElement: (element: ElementType | null) => set({ selectedElement: element }),
 
   setElementInfo: (elementInfo: ElementInfo | null) => set({ elementInfo }),
 
