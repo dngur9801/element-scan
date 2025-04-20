@@ -78,12 +78,18 @@ export const useElementScanEvents = () => {
     };
   }, [elementScanActive, hoveredElement, isPinned, selectedElement]);
 
-  // useEffect(() => {
-  //   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  //     if (message.action === 'toggleElementScan') {
-  //       console.log('here222');
-  //       useElementScanStore.getState().toggleScan(message.value);
-  //     }
-  //   });
-  // }, []);
+  // 단축키 등록: Alt + C
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.altKey && e.code === 'KeyC') {
+        e.preventDefault();
+        toggleScan();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
 };
