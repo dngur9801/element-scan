@@ -6,11 +6,13 @@ interface useElementScanStore {
   isPinned: boolean;
   hoveredElement: ElementType | null;
   selectedElement: ElementType | null;
+  isButtonVisible: boolean;
   elementInfo: ElementInfo | null;
 
   reset: () => void;
   toggleScan: (value?: boolean) => boolean;
   togglePin: (value?: boolean) => boolean;
+  toggleElementScanButtonVisible: (value?: boolean) => boolean;
   setHoveredElement: (element: ElementType | null) => void;
   setSelectedElement: (element: ElementType | null) => void;
   setElementInfo: (elementInfo: ElementInfo | null) => void;
@@ -22,6 +24,7 @@ export const useElementScanStore = create<useElementScanStore>((set, get) => ({
   isPinned: false,
   hoveredElement: null,
   selectedElement: null,
+  isButtonVisible: false,
   elementInfo: {
     tagName: '',
     className: '',
@@ -58,6 +61,13 @@ export const useElementScanStore = create<useElementScanStore>((set, get) => ({
     const isPinned = value !== undefined ? value : !current;
     set({ isPinned });
     return isPinned;
+  },
+
+  toggleElementScanButtonVisible: (value?: boolean) => {
+    const current = get().isButtonVisible;
+    const isButtonVisible = value !== undefined ? value : !current;
+    set({ isButtonVisible });
+    return isButtonVisible;
   },
 
   setHoveredElement: (element: ElementType | null) => set({ hoveredElement: element }),

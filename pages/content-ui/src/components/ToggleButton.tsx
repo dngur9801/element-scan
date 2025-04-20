@@ -3,7 +3,9 @@ import { useElementScanStore } from '@extension/shared';
 import { ELEMENT_ID, Z_INDEX } from '@src/constants';
 
 export default function ToggleButton() {
-  const { elementScanActive, toggleScan } = useElementScanStore();
+  const { elementScanActive, toggleScan, isButtonVisible } = useElementScanStore();
+
+  if (!isButtonVisible) return <></>;
 
   return (
     <div className="fixed top-2 right-2" style={{ zIndex: Z_INDEX.TOGGLE_BTN }}>

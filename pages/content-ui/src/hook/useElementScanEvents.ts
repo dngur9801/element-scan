@@ -77,4 +77,13 @@ export const useElementScanEvents = () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
   }, [elementScanActive, hoveredElement, isPinned, selectedElement]);
+
+  // useEffect(() => {
+  //   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  //     if (message.action === 'toggleElementScan') {
+  //       console.log('here222');
+  //       useElementScanStore.getState().toggleScan(message.value);
+  //     }
+  //   });
+  // }, []);
 };

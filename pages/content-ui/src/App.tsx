@@ -5,10 +5,11 @@ import {
   SelectedHighlightOverlay,
   SpacingGuideLine,
 } from './components';
-import { useElementScanEvents } from './hook';
+import { useElementScanEvents, useChromeEvents } from './hook';
 
 export default function App() {
   useElementScanEvents();
+  useChromeEvents();
 
   return (
     <>
