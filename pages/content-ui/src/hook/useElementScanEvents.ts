@@ -81,7 +81,7 @@ export const useElementScanEvents = () => {
   // 단축키 등록: Alt + C
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.altKey && e.code === 'KeyC') {
+      if (e.altKey && e.code === 'KeyC' && !e.shiftKey && !e.ctrlKey && !e.metaKey) {
         e.preventDefault();
         toggleScan();
       }
