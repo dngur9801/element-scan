@@ -76,7 +76,7 @@ const Popup = () => {
         <ol className="pl-4 m-0 text-sm">
           <li className="mb-1">토글 버튼이나 단축키로 인스펙터를 활성화합니다.</li>
           <li className="mb-1">웹 페이지의 요소 위에 마우스를 올리면 CSS 정보가 표시됩니다.</li>
-          <li className="mb-1">ESC 키 및 단축키를 통해 인스펙터를 비활성화합니다.</li>
+          <li className="mb-1">ESC 키를 통해 인스펙터를 비활성화합니다.</li>
         </ol>
       </div>
     </div>
