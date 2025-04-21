@@ -99,10 +99,26 @@ export default function Overlay({
         id={id}
       />
 
-      <div ref={topRef} className={cn(guidelineClassName, 'h-[1px]', 'border-t', Z_INDEX.ELEMENT_GUIDE_LINE)} />
-      <div ref={rightRef} className={cn(guidelineClassName, 'h-[1px]', 'border-l', Z_INDEX.ELEMENT_GUIDE_LINE)} />
-      <div ref={bottomRef} className={cn(guidelineClassName, 'w-[1px]', 'border-t', Z_INDEX.ELEMENT_GUIDE_LINE)} />
-      <div ref={leftRef} className={cn(guidelineClassName, 'w-[1px]', 'border-l', Z_INDEX.ELEMENT_GUIDE_LINE)} />
+      <div
+        ref={topRef}
+        className={cn(guidelineClassName, 'h-[1px]', 'border-t')}
+        style={{ zIndex: Z_INDEX.ELEMENT_GUIDE_LINE }}
+      />
+      <div
+        ref={rightRef}
+        className={cn(guidelineClassName, 'h-[1px]', 'border-l')}
+        style={{ zIndex: Z_INDEX.ELEMENT_GUIDE_LINE }}
+      />
+      <div
+        ref={bottomRef}
+        className={cn(guidelineClassName, 'w-[1px]', 'border-t')}
+        style={{ zIndex: Z_INDEX.ELEMENT_GUIDE_LINE }}
+      />
+      <div
+        ref={leftRef}
+        className={cn(guidelineClassName, 'w-[1px]', 'border-l')}
+        style={{ zIndex: Z_INDEX.ELEMENT_GUIDE_LINE }}
+      />
     </>
   );
 }
