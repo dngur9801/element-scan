@@ -31,12 +31,25 @@ Element Scan은 디자이너와 프론트엔드 개발자가 **스타일을 "눈
 
 ---
 
-## 💻 설치 방법
+## 💻 개발 환경 실행
 
-1. 이 저장소를 클론하거나 ZIP으로 다운로드합니다.
-2. Chrome 브라우저에서 `chrome://extensions`로 이동합니다.
-3. 상단의 `개발자 모드`를 활성화합니다.
-4. `압축 해제된 확장 프로그램을 로드` 버튼을 클릭한 후, 프로젝트 폴더를 선택합니다.
+1. git clone
+```
+git clone https://github.com/dngur9801/element-scan.git
+```
+2. .nvmrc에 명시된 노드 버전 동기화<br/>
+프로젝트 폴더에서 다음 명령어
+```
+nvm use
+```
+3. 의존성 설치 및 개발 환경 실행
+```
+pnpm install && pnpm dev
+```
+4. Chrome 브라우저에서 `chrome://extensions`로 이동
+5. 상단의 `개발자 모드`를 활성화합니다.
+6. 프로젝트 루트 경로에 dist폴더 업로드
+
 
 ---
 
