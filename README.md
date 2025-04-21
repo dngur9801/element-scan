@@ -3,6 +3,7 @@
 **Element Scan**은 웹 페이지에서 엘리먼트의 시각적 스타일 정보를 직관적으로 분석하고 실시간으로 수정할 수 있는 크롬 확장 프로그램입니다.  
 개발자 도구 없이도 요소 간 간격, 색상, 폰트 등 시각 중심의 스타일을 빠르게 파악할 수 있도록 도와줍니다.
 
+![](https://raw.githubusercontent.com/dngur9801/element-scan/refs/heads/main/screenshots/example.gif)
 ---
 
 ## ✅ 주요 기능
